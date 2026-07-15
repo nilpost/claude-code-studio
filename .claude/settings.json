@@ -1,0 +1,14 @@
+{
+  "$comment": "Makes THIS repo's own sessions (including fresh cloud containers) load studio-core from the local checkout, so you can dogfood uncommitted changes. Other repos should instead use the github-source snippet in templates/consumer-settings.snippet.json.",
+  "extraKnownMarketplaces": {
+    "claude-code-studio": {
+      "source": {
+        "source": "directory",
+        "path": "."
+      }
+    }
+  },
+  "enabledPlugins": {
+    "studio-core@claude-code-studio": true
+  }
+}
