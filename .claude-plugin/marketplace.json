@@ -1,0 +1,19 @@
+{
+  "name": "claude-code-studio",
+  "owner": {
+    "name": "nilpost"
+  },
+  "description": "A studio for sharing Claude Code agents and skills across local and cloud environments, with an incremental-learning loop that compounds knowledge across projects.",
+  "version": "0.1.0",
+  "plugins": [
+    {
+      "name": "studio-core",
+      "source": "./plugins/studio-core",
+      "description": "Shared agents, skills, and an incremental-learning loop (capture + recall of lessons learned).",
+      "version": "0.1.0",
+      "author": {
+        "name": "nilpost"
+      }
+    }
+  ]
+}

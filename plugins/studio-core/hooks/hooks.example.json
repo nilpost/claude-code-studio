@@ -1,0 +1,22 @@
+{
+  "//": [
+    "OPT-IN auto-capture — NOT loaded by default. The active hooks.json ships",
+    "empty so the studio never writes to your knowledge base without you asking.",
+    "To enable end-of-session reflection, copy the `hooks` block below into",
+    "hooks.json and re-enable the plugin. The command is a lightweight nudge to",
+    "run /learn; swap it for your own reflection script for fully automatic",
+    "capture."
+  ],
+  "hooks": {
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'studio: session ended — run /learn to capture any lessons.' >&2"
+          }
+        ]
+      }
+    ]
+  }
+}

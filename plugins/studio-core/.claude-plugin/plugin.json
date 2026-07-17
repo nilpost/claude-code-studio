@@ -1,0 +1,16 @@
+{
+  "name": "studio-core",
+  "displayName": "Claude Code Studio Core",
+  "version": "0.1.0",
+  "description": "Shared agents, skills, and an incremental-learning loop. Install once to get the same assets in every local project and every cloud session.",
+  "author": {
+    "name": "nilpost"
+  },
+  "keywords": [
+    "agents",
+    "skills",
+    "learning",
+    "memory",
+    "multi-environment"
+  ]
+}

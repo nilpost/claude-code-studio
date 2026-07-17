@@ -1,0 +1,14 @@
+{
+  "$comment": "Drop these two keys into any consuming repo's .claude/settings.json (merge with what's already there — do not include this $comment). Commit it so every local project AND every fresh Claude Code on the web session auto-fetches and enables the studio plugin. No ~/.claude setup required.",
+  "extraKnownMarketplaces": {
+    "claude-code-studio": {
+      "source": {
+        "source": "github",
+        "repo": "nilpost/claude-code-studio"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "studio-core@claude-code-studio": true
+  }
+}
