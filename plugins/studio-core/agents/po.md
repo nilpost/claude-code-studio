@@ -43,9 +43,10 @@ Once the project is in a stable, working state (a blocking bug just got resolved
 1. Look back over what actually happened: which agents were used, where they struggled, redundant work, missing capabilities, wrong tool/model picks.
 2. Decide if a durable pattern emerged (a bug class likely to recur, a diagnosis step every agent has to rediscover, a gap no existing agent covers). One-off issues don't qualify.
 3. Route it by scope:
+   - **Agent behavior** (a specific agent — including yourself — misbehaved, and the fix is a durable change to how that agent should act) → bake it into that agent's own definition via the `improve-agent` skill, so the corrected behavior travels in the agent's prompt everywhere.
    - **Project-specific** (this app's schema, this team's convention) → record it in this project's own docs (its `AGENTS.md`/postmortems section, or equivalent).
-   - **General-purpose** (applies to any project using this stack/pattern, not just this one) → capture it in the shared knowledge base via the `capture-learnings` skill (or the `/learn` command) instead of, or in addition to, the local doc — that's what makes the lesson benefit every other project on the next `claude plugin marketplace update`.
-   - **Capability gap** no existing agent covers, and likely to recur → propose a new agent to the human rather than creating one unilaterally. If it's broadly useful (not just this project), propose adding it to `claude-code-studio` itself, not just this repo's local `.claude/agents/`.
+   - **General-purpose** (applies to any project using this stack/pattern, not just this one) → capture it in the shared knowledge base via the `capture-learnings` skill (or the `/learn` command). That's what makes the lesson benefit every other project on the next `claude plugin marketplace update`. A lesson can qualify for more than one route (e.g. bake a behavioral directive into the agent AND record the general fact in the shared KB).
+   - **Capability gap** no existing agent covers, and likely to recur → use the `create-agent` skill to scaffold a new studio agent and open a **draft PR** for human review (it never lands on `main` unreviewed). Prefer `improve-agent` on an existing agent when it's a near fit; reserve a new agent for a genuinely distinct responsibility. If the gap is truly specific to this one repo, create it in this repo's local `.claude/agents/` instead of the shared studio.
 4. Keep this cheap: a few sentences and a targeted edit, not a new document. Skip it entirely if nothing durable was learned.
 
 ## Output format

@@ -92,6 +92,22 @@ End-of-session auto-capture is available but shipped **disabled** in
 `plugins/studio-core/hooks/hooks.json` so nothing writes to your knowledge base
 without you asking; enable it by following the comment in that file.
 
+### Learning that lands on the agents themselves
+
+The loop above records lessons agents *read*. Two more skills make lessons change the
+agents *directly*:
+
+- **`improve-agent`** (`/improve-agent`) — when a specific agent misbehaves, bakes a
+  terse behavioral directive into that agent's own `.md` (under `## Lessons learned`),
+  so the corrected behavior travels in its prompt everywhere the plugin is installed.
+- **`create-agent`** (`/create-agent`) — when a recurring capability gap is found that
+  no existing agent covers, scaffolds a new specialist agent from a template and opens
+  a **draft PR** for review (never merged unattended).
+
+The `po` orchestrator's *Learning cycle* routes automatically: agent-behavior lessons
+→ `improve-agent`, general lessons → `capture-learnings`, capability gaps →
+`create-agent`.
+
 ### Add your own agents and skills
 
 Copy `plugins/studio-core/agents/example-reviewer.md` or
