@@ -24,6 +24,26 @@ the next `claude plugin marketplace update`.
 
 <!-- Captured entries below. Newest first. -->
 
+## 2026-07-21 — claude-code-studio — plugin CLI rewrites repo .claude/settings.json on cleanup
+- **Context:** Uninstalling the test plugin / removing the marketplace after verification
+- **Lesson:** 'claude plugin uninstall' and 'marketplace remove' can rewrite the repo's .claude/settings.json and empty your intended enabledPlugins/extraKnownMarketplaces. After CLI cleanup, re-check and restore that file to its intended committed content.
+- **Trigger:** settings.json, plugin uninstall, marketplace remove, enabledPlugins
+
+## 2026-07-21 — claude-code-studio — marketplace add needs ./ prefix for local dir
+- **Context:** Adding the local marketplace during verification
+- **Lesson:** 'claude plugin marketplace add .' is rejected as an invalid source format. Use './' (or owner/repo, or an https URL). Bare '.' does not count as a path.
+- **Trigger:** marketplace add, directory source, local path, ./
+
+## 2026-07-21 — claude-code-studio — Plugin hooks.json schema rejects non-event keys
+- **Context:** claude plugin validate failed on the studio-core plugin
+- **Lesson:** Under hooks.json 'hooks', only real event names (SessionStart, SessionEnd, PreToolUse, ...) are valid keys. Placeholder/disabled keys like '_disabled_SessionEnd' fail 'claude plugin validate'. Ship hooks.json empty ({"hooks":{}}) and put opt-in examples in a separate hooks.example.json that the loader ignores.
+- **Trigger:** hooks.json, plugin validate, SessionEnd, PreToolUse, plugin hooks
+
+## 2026-07-21 — claude-code-studio — Cloud ~/.claude does not persist — distribute via marketplace
+- **Context:** Deciding how to share agents/skills between local and Claude Code on the web
+- **Lesson:** In cloud sessions the container is ephemeral and clones the repo fresh; user-level ~/.claude is absent. Do NOT rely on ~/.claude/skills or ~/.claude/agents for cross-environment sharing. Distribute via a git-hosted plugin marketplace referenced from a repo's committed .claude/settings.json (extraKnownMarketplaces + enabledPlugins), or commit assets into the repo.
+- **Trigger:** cloud, ephemeral, ~/.claude, multi-environment, marketplace, distribution, claude code on the web
+
 ## 2026-07-17 — github-dashboard — Verify by running, not just by compiling
 - **Context:** Reviewing a 'done' full-stack app for deploy-readiness.
 - **Lesson:** A green tsc/build proves it compiles, not that it works. Boot the app against real dependencies (e.g. a throwaway Postgres) and exercise the actual flows — health, register, login, session — before calling it done. The most serious bugs (broken health check, login, secret leaks) are invisible to the compiler and only surface at runtime. Test both DB-up and DB-down paths.
