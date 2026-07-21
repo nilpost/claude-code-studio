@@ -72,6 +72,31 @@ repo you open. This is the closest to "always everywhere" without an org Owner r
 Requires the environment's network level to allow GitHub (the default **Trusted** level
 does; **None** would block the marketplace fetch).
 
+> **The marketplace repo must be public for this route.** Setup scripts run *before*
+> Claude Code launches, so the git-proxy auth it configures for in-scope private repos
+> isn't available yet. Cloning a **private** marketplace repo from the setup script
+> fails with:
+>
+> ```
+> × Failed to add marketplace: Failed to clone marketplace repository:
+>   HTTPS authentication failed ... could not read Password ... terminal prompts disabled
+> ```
+>
+> Fixes, in order of preference:
+> 1. **Make the marketplace repo public** (GitHub → repo **Settings** → **General** →
+>    **Danger Zone** → **Change repository visibility** → **Make public**). Agents,
+>    skills, and docs contain no secrets, and public is how marketplaces normally ship.
+>    The setup-script commands above then work unchanged.
+> 2. **Keep it private → use [Option A](#cloud-option-a--per-repo-guaranteed)** instead.
+>    Plugins declared in a repo's `.claude/settings.json` install *at session start*, in
+>    Claude Code's authenticated context, so an in-scope private clone succeeds there.
+>    (Cross-repo access to a private marketplace is still subject to each session's repo
+>    scope.)
+>
+> Note: `claude plugin marketplace add owner/repo` works fine from a shell **inside** a
+> running session even for a private repo — it's only the pre-launch setup-script phase
+> that lacks the auth.
+
 ---
 
 ## Org-wide (Teams / Enterprise only)
