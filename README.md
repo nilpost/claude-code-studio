@@ -73,12 +73,18 @@ Every fresh cloud session of that repo then auto-fetches and enables the plugin 
 `~/.claude` setup required. (This repo's own `.claude/settings.json` uses a local
 `directory` source instead, so you can dogfood uncommitted changes here.)
 
-### Always on for the whole org (local + cloud, no per-repo edits)
+### Always on (Pro and org-wide)
 
-To make `studio-core` load automatically in **every** member's session — local and
-cloud, every repo — an Owner configures it once via **server-managed settings** in the
-admin console. Device `managed-settings.json`/MDM files do **not** reach cloud sessions,
-so this is the channel that covers both. Full steps and the exact JSON:
+To make `studio-core` load automatically in every session:
+
+- **Pro / Max (individual):** a one-time local `--scope user` install for local
+  projects, plus either a per-repo `.claude/settings.json` snippet or a personal cloud
+  environment setup script for cloud. No admin console needed.
+- **Teams / Enterprise (org-wide):** an Owner configures it once via **server-managed
+  settings** — the channel that reaches both local and cloud (device
+  `managed-settings.json`/MDM files do **not** reach cloud sessions).
+
+Full account-by-account steps and the exact JSON:
 [`docs/deploy-org-wide.md`](docs/deploy-org-wide.md).
 
 ## Incremental learning
