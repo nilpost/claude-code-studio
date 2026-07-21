@@ -87,6 +87,13 @@ To make `studio-core` load automatically in every session:
 Full account-by-account steps and the exact JSON:
 [`docs/deploy-org-wide.md`](docs/deploy-org-wide.md).
 
+### Updating / refreshing
+
+Agents and slash-commands register only at session start, so pulling the latest usually
+means "update, then start a new session" (local: `claude plugin marketplace update
+claude-code-studio`; cloud: just start a new session — it auto-pulls `main`). Full
+details, including the environment-cache caveat: [`docs/updating.md`](docs/updating.md).
+
 ## Incremental learning
 
 A three-part loop that compounds knowledge across projects, centralized in
