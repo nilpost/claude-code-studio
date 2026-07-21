@@ -1,0 +1,26 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Node (if any tooling is added later)
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Secrets / local env — never commit these
+.env
+.env.*
+!.env.example
+!.env.template
+
+# Local Claude state that should not be shared
+.claude/settings.local.json
+**/.backups/
+
+# Logs / scratch
+*.log
+tmp/
+.tmp/
