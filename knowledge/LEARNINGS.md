@@ -24,6 +24,26 @@ the next `claude plugin marketplace update`.
 
 <!-- Captured entries below. Newest first. -->
 
+## 2026-07-22 — github-dashboard — Guard NaN in hand-rolled semver comparison
+- **Context:** compareVersions in dependency.service.ts; edge-case tests exposed a real bug
+- **Lesson:** The idiom part = arr[i] || 0 coerces NaN to 0, so a non-registry version spec (workspace star, file path, git URL) parsed to 0.0.0 and was falsely flagged outdated against any real release. Bail to a safe default when a version is not a bare x.y.z. Also: writing edge-case tests is what surfaced this — tests are not just verification, they find bugs.
+- **Trigger:** semver, compareVersions, NaN coercion, workspace, outdated dependency, version parse, edge-case tests
+
+## 2026-07-22 — github-dashboard — Railway custom domains 404 without in-service registration
+- **Context:** Planning a Cloudflare subdomain go-live pointing at a Railway app
+- **Lesson:** A bare Cloudflare CNAME to the default up.railway.app host returns 404 for a custom domain. First register the custom domain IN the Railway service (railway domain <host>, or Settings/Networking), then point DNS at the CNAME target Railway provides. If the record is proxied and Railway's cert will not issue, grey-cloud it until verified then re-proxy; keep SSL/TLS mode Full.
+- **Trigger:** railway, custom domain, up.railway.app, cloudflare CNAME, 404, DNS, proxied, SSL Full
+
+## 2026-07-22 — github-dashboard — Audit ALL client fetch sites when adding CSRF/auth headers
+- **Context:** Wiring double-submit-cookie CSRF into a React cookie-session SPA
+- **Lesson:** When a change requires a header on every mutation (CSRF token, auth), do not assume all requests go through the shared api helper. This SPA had 6 scattered direct fetch calls (login, register, logout, settings x2, sync) outside the helper. Grep every fetch call site and wire each mutating one, or the change silently misses paths.
+- **Trigger:** csrf, x-csrf-token, fetch, apiRequest, cookie session, SPA mutation, double-submit
+
+## 2026-07-22 — github-dashboard — Never cast an external SDK method with 'as any'
+- **Context:** Fixing Dependabot detection: octokit.repos.listDependabotAlerts (a non-existent method) was called behind an 'as any' cast
+- **Lesson:** An 'as any' cast on a third-party SDK method defeats the type-checker: a non-existent method compiles clean, throws at runtime, gets swallowed by the surrounding catch, and returns empty — shipping a silently-broken feature. Never cast an external SDK method to any; let tsc verify the name. Cover the path with an integration test using a mocked SDK, since untested code is how this class of bug ships through green CI.
+- **Trigger:** octokit, as any, SDK, third-party client, listDependabotAlerts, dependabot, swallowed catch, mocked SDK test
+
 ## 2026-07-21 — claude-code-studio — plugin CLI rewrites repo .claude/settings.json on cleanup
 - **Context:** Uninstalling the test plugin / removing the marketplace after verification
 - **Lesson:** 'claude plugin uninstall' and 'marketplace remove' can rewrite the repo's .claude/settings.json and empty your intended enabledPlugins/extraKnownMarketplaces. After CLI cleanup, re-check and restore that file to its intended committed content.
