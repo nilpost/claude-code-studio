@@ -24,6 +24,11 @@ the next `claude plugin marketplace update`.
 
 <!-- Captured entries below. Newest first. -->
 
+## 2026-07-27 — JP_Invoice_Generator / Invoice_Generator — git reset --hard deletes tracked-then-ignored files; mirror-clone from remote, not local
+- **Context:** Rewriting git history with git filter-repo to scrub leaked PII, then syncing a local branch to the rewritten remote
+- **Lesson:** (1) Before git reset --hard or a checkout across a commit boundary, check whether any path is tracked in the source commit but gitignored in the target commit (e.g. a config-split fix that does git rm --cached). The working-tree file gets deleted in that transition regardless of .gitignore, since .gitignore only blocks future git add, not removal on a tracked-to-untracked transition — back up such files first. (2) When mirror-cloning a repo for a history rewrite (git filter-repo/BFG), always clone from the actual remote URL (git remote get-url origin), never from a local working copy. A --mirror clone of a local copy only sees that copy's last-fetched refs/heads/*, silently missing true origin/* state (e.g. a squash-merge that happened on GitHub after the last local fetch) — the rewrite and force-push then look successful but leave the real live branch untouched.
+- **Trigger:** git reset --hard, git filter-repo, git checkout, mirror clone, history rewrite, gitignore, tracked file deleted, force-push, BFG
+
 ## 2026-07-22 — github-dashboard — Guard NaN in hand-rolled semver comparison
 - **Context:** compareVersions in dependency.service.ts; edge-case tests exposed a real bug
 - **Lesson:** The idiom part = arr[i] || 0 coerces NaN to 0, so a non-registry version spec (workspace star, file path, git URL) parsed to 0.0.0 and was falsely flagged outdated against any real release. Bail to a safe default when a version is not a bare x.y.z. Also: writing edge-case tests is what surfaced this — tests are not just verification, they find bugs.
