@@ -10,6 +10,17 @@ Entries are grouped by date, newest first. Each names the plugin and its new ver
 
 ## 2026-07-28
 
+### cloudflare-mcp 0.2.0
+
+- **Changed**: now depends on Cloudflare's own official plugin
+  (`cloudflare@cloudflare`, from their `cloudflare/skills` marketplace) instead of
+  declaring MCP servers in a local `.mcp.json`. Enabling `cloudflare-mcp` now pulls in
+  Cloudflare's real, actively maintained servers (5, vs. the 2 this plugin used to
+  hand-copy) automatically. Requires `claude plugin marketplace add cloudflare/skills`
+  once per machine/environment — see `plugins/cloudflare-mcp/README.md`.
+- Introduces this repo's first cross-marketplace plugin dependency, allowed via
+  `allowCrossMarketplaceDependenciesOn` in `.claude-plugin/marketplace.json`.
+
 ### studio-core 0.2.0
 
 - **Fixed**: version had never been bumped since the initial release, despite several
@@ -43,12 +54,4 @@ Entries are grouped by date, newest first. Each names the plugin and its new ver
 ### cloudflare-mcp 0.1.0 — initial release
 
 - Cloudflare remote MCP servers (docs + Workers bindings) via a hand-copied
-  `.mcp.json`.
-
-<!--
-  cloudflare-mcp 0.2.0 (dependency-based rework, replacing the hand-copied .mcp.json
-  above) is on a separate, independent PR (#17) that branched before this file
-  existed. Whichever of that PR and this one merges second will hit a trivial merge
-  conflict on this file — resolve by keeping both sides' entries, then delete this
-  comment. Do not resolve by dropping either plugin's entry.
--->
+  `.mcp.json`. Superseded by the dependency-based 0.2.0 above.

@@ -80,18 +80,23 @@ For all-repos or org-wide setups (Pro and Teams/Enterprise), see
 
 ### Cloudflare MCP (optional add-on)
 
-A second plugin, `cloudflare-mcp`, bundles Cloudflare's remote MCP servers (docs +
-Workers bindings by default — see [`plugins/cloudflare-mcp/README.md`](plugins/cloudflare-mcp/README.md)
-for the full server list) using the same local/cloud mechanism as `studio-core`.
+A second plugin, `cloudflare-mcp`, depends on Cloudflare's own official plugin
+(`cloudflare@cloudflare`, from their [`cloudflare/skills`](https://github.com/cloudflare/skills)
+marketplace) so it installs automatically wherever this one is enabled — see
+[`plugins/cloudflare-mcp/README.md`](plugins/cloudflare-mcp/README.md) for what that
+gets you and why it's a dependency rather than a hand-copied server list.
 
 ```bash
+claude plugin marketplace add cloudflare/skills          # one-time prerequisite
 claude plugin install cloudflare-mcp@claude-code-studio --scope user
 ```
 
 For cloud, pass `--with-cloudflare` to `enable-in-repo.sh`, or merge the
 `enabledPlugins` key from
 [`templates/consumer-settings-cloudflare.snippet.json`](templates/consumer-settings-cloudflare.snippet.json)
-into the repo's `.claude/settings.json`. Each Cloudflare server OAuths on first tool use
+into the repo's `.claude/settings.json` — either way, the `cloudflare/skills`
+marketplace still needs to be added once in that environment (see the plugin's own
+README) for the dependency to resolve. Each Cloudflare server OAuths on first tool use
 — no tokens stored in this repo.
 
 ## What's inside
@@ -127,6 +132,8 @@ purpose: that's exactly the kind of copy that silently drifts out of sync with
 `plugin.json`, which is the actual bug this changelog exists to stop repeating. Check
 installed versions with `claude plugin list`.)
 
+- **2026-07-28** — `cloudflare-mcp` bumped to `0.2.0`: now depends on Cloudflare's
+  official plugin instead of a hand-copied server list.
 - **2026-07-28** — `studio-core` bumped to `0.2.0` (a version-discipline catch-up; see
   CHANGELOG.md for why it was overdue).
 
