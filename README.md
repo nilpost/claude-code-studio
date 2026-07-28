@@ -132,6 +132,8 @@ purpose: that's exactly the kind of copy that silently drifts out of sync with
 `plugin.json`, which is the actual bug this changelog exists to stop repeating. Check
 installed versions with `claude plugin list`.)
 
+- **2026-07-28** — `studio-core` bumped to `0.2.1`: `/learn`, `/improve-agent`, and
+  `/create-agent` now state what they're doing before starting work.
 - **2026-07-28** — `cloudflare-mcp` bumped to `0.2.0`: now depends on Cloudflare's
   official plugin instead of a hand-copied server list.
 - **2026-07-28** — `studio-core` bumped to `0.2.0` (a version-discipline catch-up; see
