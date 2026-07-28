@@ -8,6 +8,15 @@ changing `plugins/<name>/` includes a matching entry here (see
 
 Entries are grouped by date, newest first. Each names the plugin and its new version.
 
+## 2026-07-28 (2)
+
+### studio-core 0.2.1
+
+- **Fixed**: `/learn`, `/improve-agent`, and `/create-agent` gave no visible
+  indication of what they were doing when invoked — no narration before the work
+  started. Each command now opens with an explicit instruction to state in one
+  sentence what it's about to do before proceeding.
+
 ## 2026-07-28
 
 ### cloudflare-mcp 0.2.0

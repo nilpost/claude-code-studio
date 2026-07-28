@@ -2,6 +2,8 @@
 description: Capture lessons from this session into the studio knowledge base (runs capture-learnings).
 ---
 
+Start by telling me in one sentence what you're about to do, then proceed.
+
 Review the recent conversation and capture any worthwhile lessons into the studio
 knowledge base by running the `capture-learnings` skill.
 

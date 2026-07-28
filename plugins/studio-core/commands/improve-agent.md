@@ -2,6 +2,8 @@
 description: Bake a behavioral lesson into a specific studio agent's definition (runs improve-agent).
 ---
 
+Start by telling me in one sentence what you're about to do, then proceed.
+
 A studio agent made a mistake or was corrected. Using the `improve-agent` skill,
 turn that into a terse behavioral directive and bake it into that agent's own
 definition file so the corrected behavior sticks.
