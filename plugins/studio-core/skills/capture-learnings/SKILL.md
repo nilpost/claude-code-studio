@@ -1,7 +1,7 @@
 ---
 name: capture-learnings
 description: Capture lessons from the current session into the studio's durable, cross-project knowledge base. Use at the end of a task, after the user corrects you, or when you notice a repeated mistake or inefficiency — anything worth remembering next time. Also runs via the /learn command.
-allowed-tools: Read, Edit, Bash(git *), Bash(*/append_learning.sh *)
+allowed-tools: Read, Edit, Bash(git *), Bash(*/append_learning.sh *), Bash(*/push_to_studio.sh *)
 ---
 
 # capture-learnings
@@ -63,3 +63,24 @@ Keep each entry to a single lesson. Make it actionable and specific:
 
 Lessons only compound once committed and pushed — an uncommitted entry helps this
 session but no other.
+
+## Outside the studio checkout (another project, or a cloud session)
+
+Steps 2 and 4 above assume you are working *inside* a checkout of the
+`claude-code-studio` repo (so `knowledge/LEARNINGS.md` exists and you can commit and
+push it). When the plugin is installed but the repo is **not** checked out — i.e. no
+`knowledge/LEARNINGS.md` is found walking up from the current directory — do not try to
+write a local file. Instead route the entry to the repo over GitHub:
+
+```
+${CLAUDE_PLUGIN_ROOT}/scripts/push_to_studio.sh learning \
+  --project "<project>" --title "<short title>" \
+  --context "<what task/area>" --lesson "<what to do next time>" \
+  --trigger "<keywords>"
+```
+
+It clones the public studio repo to a temp dir, appends the entry (newest-first),
+pushes a branch, and opens a draft PR (via `gh` if present, otherwise it prints the
+compare URL for you to open). Add `--dry-run` to preview without pushing. If the push
+fails for lack of write access in this environment, it keeps the prepared commit and
+tells you where, so nothing is lost.
