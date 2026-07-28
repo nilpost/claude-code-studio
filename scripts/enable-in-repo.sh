@@ -137,5 +137,5 @@ if [ "$dry_run" -eq 0 ] && [ "$changed" -eq 1 ]; then
   echo "Next: commit and push it so every future session of this repo picks it up."
   echo "  git -C '$target' add .claude/settings.json && git -C '$target' commit -m 'chore: enable claude-code-studio plugins'"
   echo
-  echo "Agents and slash-commands register at session start — open a NEW session to use them."
+  echo "Run /reload-plugins in an open session to pick up the agents and commands."
 fi

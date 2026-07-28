@@ -6,11 +6,15 @@ optional `cloudflare-mcp`); the examples use `studio-core`.
 
 ## The one rule that explains everything
 
-Claude Code registers **agents and slash-commands only at session start**. **Skills**
-can refresh live (SKILL.md edits are picked up mid-session), but a *new* agent, a
-changed agent prompt, or a new `/command` will not appear in a session that is already
-running. So "get the latest agents" almost always means: update, then **start a new
-session**.
+**`SKILL.md` edits apply immediately. Everything else needs `/reload-plugins`.**
+
+Skills refresh live mid-session. A new agent, a changed agent prompt, a new
+`/command`, `hooks/`, or `.mcp.json` do not — but you don't need a new session for
+them either: [`/reload-plugins`](https://code.claude.com/docs/en/plugins) reloads
+plugins, skills, agents, hooks, and plugin MCP/LSP servers in place. Restarting also
+works; it's just heavier.
+
+So "get the latest agents" means: fetch the update, then `/reload-plugins`.
 
 ## Local — update an installed session
 
@@ -26,8 +30,8 @@ claude plugin marketplace update claude-code-studio    # refetch marketplace fro
 claude plugin update studio-core@claude-code-studio    # update the installed plugin
 ```
 
-Then **start a new session** for agents/commands to re-register. Skills are current
-immediately. Check what you have with `claude plugin list`.
+Then run **`/reload-plugins`** so updated agents and commands take effect. Skills are
+current immediately either way. Check what you have with `claude plugin list`.
 
 To avoid remembering this at all, enable the opt-in `SessionStart` hook in
 [`plugins/studio-core/hooks/hooks.example.json`](../plugins/studio-core/hooks/hooks.example.json):
@@ -45,8 +49,8 @@ You can't retro-inject agents/commands into a running session. Enable the plugin
 open a fresh session:
 
 - CLI: manage plugins in-session with the **`/plugin`** menu (add marketplace,
-  enable/disable, update) — but still **start a new session** for `@po` and the
-  commands to register.
+  enable/disable, update), then **`/reload-plugins`** to register `@po` and the
+  commands without restarting.
 
 ## Cloud (Claude Code on the web) — updating = start a new session
 
@@ -65,13 +69,40 @@ start**, so a brand-new cloud session is automatically on the latest `main`. The
 
 | Situation | What to do |
 | --- | --- |
-| Local, want latest agents/skills | `./scripts/update-studio.sh` → **new session** |
+| Local, want latest agents/skills | `./scripts/update-studio.sh` → **`/reload-plugins`** |
 | Local, never want to think about it | Enable the opt-in `SessionStart` hook (see above) |
-| A repo where the studio isn't loaded at all | `./scripts/enable-in-repo.sh /path/to/repo`, commit, **new session** |
-| Session already running, plugin not loaded | Enable it, then **start a new session** |
+| A repo where the studio isn't loaded at all | `./scripts/enable-in-repo.sh /path/to/repo`, commit, **`/reload-plugins`** |
+| Session already running, plugin not loaded | Enable it, then **`/reload-plugins`** |
 | Cloud, want latest | **Start a new cloud session** (auto-pulls `main`) |
 | Cloud Option B feels stale | Re-save the environment **setup script** to rebuild the cache |
+| Want the studio to track your working tree | `./scripts/mirror-local.sh` (see below) |
 | Check what's installed | `claude plugin list` |
+
+## Mirror your working tree (no install, no update step)
+
+If you're the one *authoring* the studio, the update cycle above is friction you don't
+need. Symlink the plugin into your personal skills directory instead:
+
+```bash
+./scripts/mirror-local.sh                    # studio-core
+./scripts/mirror-local.sh --with-cloudflare  # both plugins
+./scripts/mirror-local.sh --undo             # revert
+```
+
+Claude Code loads any folder under `~/.claude/skills/` that has a
+`.claude-plugin/plugin.json` as `<name>@skills-dir`, and discovers it **in place**
+rather than copying it into the plugin cache. The plugin *is* your checkout, so
+`git pull` — or an uncommitted local edit — is live on the next `/reload-plugins`. No
+marketplace, no `plugin install`, no `plugin update`.
+
+`~/.claude/skills/` is personal scope, so this applies in **every local project**. It
+does **not** reach Claude Code on the web (ephemeral containers don't keep
+`~/.claude`) — use `enable-in-repo.sh` for those.
+
+> If you *also* have `studio-core` installed from the marketplace, both load side by
+> side under different names and every agent appears twice. Keep one:
+> `claude plugin uninstall studio-core@claude-code-studio`. The script warns you if it
+> detects this.
 
 ## Publishing an update (maintainer side)
 

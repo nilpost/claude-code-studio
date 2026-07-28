@@ -112,7 +112,8 @@ plugins/studio-core/                 The main plugin (agents, skills, commands, 
 plugins/cloudflare-mcp/              Optional plugin: Cloudflare remote MCP servers
 knowledge/LEARNINGS.md               Shared, version-controlled cross-project memory
 templates/                           Copy/paste settings snippets for consumer repos
-scripts/                             install-local · update-studio · enable-in-repo · sync-learnings
+scripts/                             install-local · update-studio · enable-in-repo ·
+                                     mirror-local · sync-learnings
 docs/                                architecture · deploy-org-wide · updating
 ```
 

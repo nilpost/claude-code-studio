@@ -46,4 +46,4 @@ echo
 echo "Done. Verify with:  claude plugin list"
 echo "Update later with:  ./scripts/update-studio.sh"
 echo
-echo "Agents and slash-commands register at session start — open a NEW session to use them."
+echo "Run /reload-plugins in an open session to pick up the agents and commands."

@@ -7,9 +7,9 @@
 # this: they clone and install fresh at session start, so a new cloud session is
 # already on the latest.
 #
-# NOTE: agents and slash-commands are registered only at session start. After
-# this script runs, open a NEW session for changes to take effect. (Skills are
-# picked up live.)
+# NOTE: SKILL.md edits apply immediately; agents, commands, hooks, and .mcp.json
+# do not. After this script runs, use /reload-plugins in an open session (or
+# restart) to pick those up.
 #
 # Usage:
 #   ./scripts/update-studio.sh                    # update studio-core
@@ -49,4 +49,4 @@ echo
 echo "Up to date. Current install:"
 claude plugin list || true
 echo
-echo "Open a NEW session for updated agents and commands to register."
+echo "Run /reload-plugins in an open session to pick up the updated agents and commands."

@@ -145,7 +145,7 @@ knowledge/LEARNINGS.md               Shared, version-controlled cross-project me
 .claude/settings.json                Loads the plugins into THIS repo's own sessions
 templates/                           Copy/paste settings blocks for other repos
 scripts/                             install-local, update-studio, enable-in-repo,
-                                     sync-learnings
+                                     mirror-local, sync-learnings
 docs/                                deploy-org-wide, updating, architecture
 ```
 

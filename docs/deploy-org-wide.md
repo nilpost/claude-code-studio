@@ -40,6 +40,11 @@ To stay on the latest, run `./scripts/update-studio.sh` periodically, or enable 
 opt-in `SessionStart` hook described in [`updating.md`](updating.md) so each new
 session starts current.
 
+If you author the studio yourself, `./scripts/mirror-local.sh` skips the install and
+update cycle entirely: it symlinks the plugin into `~/.claude/skills/`, so every local
+project loads it straight from your checkout and `git pull` is enough. See
+[Mirror your working tree](updating.md#mirror-your-working-tree-no-install-no-update-step).
+
 ### Cloud (Claude Code on the web)
 
 Cloud containers are ephemeral and don't keep `~/.claude`, so "always on" has to come
