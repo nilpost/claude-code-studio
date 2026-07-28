@@ -22,13 +22,23 @@ JSON page to paste into. Use these instead; none require an admin console.
 ### Local machine (Pro) — one time
 
 ```bash
+./scripts/install-local.sh                    # studio-core
+./scripts/install-local.sh --with-cloudflare  # + the Cloudflare MCP add-on
+```
+
+Equivalent by hand:
+
+```bash
 claude plugin marketplace add nilpost/claude-code-studio
 claude plugin install studio-core@claude-code-studio --scope user
-# or simply: ./scripts/install-local.sh
 ```
 
 This writes to your own `~/.claude/`, so the studio is always on in every local
 project on that machine. Nothing to hand-edit.
+
+To stay on the latest, run `./scripts/update-studio.sh` periodically, or enable the
+opt-in `SessionStart` hook described in [`updating.md`](updating.md) so each new
+session starts current.
 
 ### Cloud (Claude Code on the web)
 
@@ -39,7 +49,18 @@ from a committed file or your environment config. Both are available on Pro.
 
 Add these two keys to the repo's **`.claude/settings.json`** (create the file if
 needed) and commit. Every cloud session of that repo then auto-installs and enables the
-plugin at session start. This is the block in
+plugin at session start, always from the current `main`.
+
+From a studio checkout, this is one command per repo — it merges the keys into whatever
+that repo's settings file already contains, and is safe to re-run:
+
+```bash
+./scripts/enable-in-repo.sh /path/to/other-repo                    # studio-core
+./scripts/enable-in-repo.sh /path/to/other-repo --with-cloudflare  # + Cloudflare MCP
+./scripts/enable-in-repo.sh /path/to/other-repo --dry-run          # preview only
+```
+
+Then commit the result in that repo. To do it by hand instead, merge the block from
 [`../templates/consumer-settings.snippet.json`](../templates/consumer-settings.snippet.json):
 
 ```json
@@ -64,6 +85,8 @@ script**):
 ```bash
 claude plugin marketplace add nilpost/claude-code-studio
 claude plugin install studio-core@claude-code-studio --scope user
+# optional add-on:
+# claude plugin install cloudflare-mcp@claude-code-studio --scope user
 ```
 
 The setup script runs before every session in that environment and its output is
@@ -131,6 +154,9 @@ provider (Bedrock / Vertex / Foundry) or a custom `ANTHROPIC_BASE_URL`.
      }
    }
    ```
+
+   Add `"cloudflare-mcp@claude-code-studio": true` alongside it to push the optional
+   Cloudflare MCP add-on org-wide as well.
 
 3. Save. Clients apply it on next startup and on the hourly poll.
 

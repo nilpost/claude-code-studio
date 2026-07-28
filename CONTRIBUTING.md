@@ -4,6 +4,11 @@ Thanks for improving `claude-code-studio`. This repo is a Claude Code plugin
 marketplace, so "contributing" mostly means adding or refining **agents**, **skills**,
 and **commands** under `plugins/studio-core/`, then validating and opening a PR.
 
+The catalog also publishes `plugins/cloudflare-mcp/`, an optional add-on that carries
+only MCP server declarations. Adding a plugin means a new directory under `plugins/`
+with its own `.claude-plugin/plugin.json`, plus an entry in `.claude-plugin/marketplace.json`
+whose `name` and `version` match that manifest.
+
 ## Ground rules
 
 - **No secrets, no PII, no confidential detail.** This is a public marketplace. Agents,
@@ -54,6 +59,7 @@ Put helper scripts in a `scripts/` subdirectory and reference them with
 
 ```bash
 claude plugin validate ./plugins/studio-core --strict
+claude plugin validate ./plugins/cloudflare-mcp --strict   # if you touched it
 ```
 
 If you touched a helper script, exercise it on a throwaway target (see the existing

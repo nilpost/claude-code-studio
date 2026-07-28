@@ -52,20 +52,28 @@ flowchart LR
 ### Local (all your projects)
 
 ```bash
-claude plugin marketplace add nilpost/claude-code-studio
-claude plugin install studio-core@claude-code-studio --scope user
-# or: ./scripts/install-local.sh
+./scripts/install-local.sh
+# or: claude plugin marketplace add nilpost/claude-code-studio
+#     claude plugin install studio-core@claude-code-studio --scope user
 ```
 
 Start a new session, then try `@po`, `/learn`, or any skill. User-scope install makes it
-available in every local project.
+available in every local project. Pull updates later with `./scripts/update-studio.sh`.
 
 ### Cloud (Claude Code on the web)
 
-Commit the two keys from
-[`templates/consumer-settings.snippet.json`](templates/consumer-settings.snippet.json)
-into a repo's `.claude/settings.json`; every cloud session of that repo auto-installs the
-plugin. For all-repos or org-wide setups (Pro and Teams/Enterprise), see
+Cloud containers are ephemeral, so "always on" has to come from a committed file. Run
+this once per repo and commit the result — every future session of that repo then
+auto-installs the plugin from the latest `main`:
+
+```bash
+./scripts/enable-in-repo.sh /path/to/your-repo
+```
+
+It merges into any existing `.claude/settings.json` and is safe to re-run; `--dry-run`
+previews. To do it by hand, copy
+[`templates/consumer-settings.snippet.json`](templates/consumer-settings.snippet.json).
+For all-repos or org-wide setups (Pro and Teams/Enterprise), see
 **[docs/deploy-org-wide.md](docs/deploy-org-wide.md)**.
 
 ### Cloudflare MCP (optional add-on)
@@ -78,7 +86,8 @@ for the full server list) using the same local/cloud mechanism as `studio-core`.
 claude plugin install cloudflare-mcp@claude-code-studio --scope user
 ```
 
-For cloud, merge the `enabledPlugins` key from
+For cloud, pass `--with-cloudflare` to `enable-in-repo.sh`, or merge the
+`enabledPlugins` key from
 [`templates/consumer-settings-cloudflare.snippet.json`](templates/consumer-settings-cloudflare.snippet.json)
 into the repo's `.claude/settings.json`. Each Cloudflare server OAuths on first tool use
 — no tokens stored in this repo.
@@ -98,12 +107,12 @@ into the repo's `.claude/settings.json`. Each Cloudflare server OAuths on first 
 ## Repository structure
 
 ```
-.claude-plugin/marketplace.json      Marketplace catalog
-plugins/studio-core/                 The distributable plugin (agents, skills, commands, hooks)
+.claude-plugin/marketplace.json      Marketplace catalog (lists both plugins)
+plugins/studio-core/                 The main plugin (agents, skills, commands, hooks)
 plugins/cloudflare-mcp/              Optional plugin: Cloudflare remote MCP servers
 knowledge/LEARNINGS.md               Shared, version-controlled cross-project memory
-templates/                           Copy/paste settings snippet for consumer repos
-scripts/                             install-local.sh, sync-learnings.sh
+templates/                           Copy/paste settings snippets for consumer repos
+scripts/                             install-local · update-studio · enable-in-repo · sync-learnings
 docs/                                architecture · deploy-org-wide · updating
 ```
 

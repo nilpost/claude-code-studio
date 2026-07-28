@@ -1,7 +1,8 @@
-# Updating & refreshing studio-core
+# Updating & refreshing the studio
 
 How to pull the latest agents, skills, and commands into a session — and why some
-changes need a fresh session.
+changes need a fresh session. Applies to both published plugins (`studio-core` and the
+optional `cloudflare-mcp`); the examples use `studio-core`.
 
 ## The one rule that explains everything
 
@@ -14,12 +15,25 @@ session**.
 ## Local — update an installed session
 
 ```bash
-claude plugin marketplace update claude-code-studio    # refetch marketplace + plugin from GitHub main
-claude plugin update studio-core@claude-code-studio     # update the installed plugin
+./scripts/update-studio.sh                    # refetch marketplace + update studio-core
+./scripts/update-studio.sh --with-cloudflare  # also update the cloudflare-mcp add-on
+```
+
+Equivalent by hand:
+
+```bash
+claude plugin marketplace update claude-code-studio    # refetch marketplace from GitHub main
+claude plugin update studio-core@claude-code-studio    # update the installed plugin
 ```
 
 Then **start a new session** for agents/commands to re-register. Skills are current
 immediately. Check what you have with `claude plugin list`.
+
+To avoid remembering this at all, enable the opt-in `SessionStart` hook in
+[`plugins/studio-core/hooks/hooks.example.json`](../plugins/studio-core/hooks/hooks.example.json):
+it refetches the marketplace in the background at session start, so each new session
+you open is current. It can't update the session it runs in — agents and commands
+register before hooks fire.
 
 The marketplace source is the GitHub repo with no pinned ref, so `marketplace update`
 always pulls the latest `main`; a `version` bump in `plugin.json` / `marketplace.json`
@@ -51,11 +65,13 @@ start**, so a brand-new cloud session is automatically on the latest `main`. The
 
 | Situation | What to do |
 | --- | --- |
-| Local, want latest agents/skills | `marketplace update` + `plugin update` → **new session** |
+| Local, want latest agents/skills | `./scripts/update-studio.sh` → **new session** |
+| Local, never want to think about it | Enable the opt-in `SessionStart` hook (see above) |
+| A repo where the studio isn't loaded at all | `./scripts/enable-in-repo.sh /path/to/repo`, commit, **new session** |
 | Session already running, plugin not loaded | Enable it, then **start a new session** |
 | Cloud, want latest | **Start a new cloud session** (auto-pulls `main`) |
 | Cloud Option B feels stale | Re-save the environment **setup script** to rebuild the cache |
-| Check current version | `claude plugin list` |
+| Check what's installed | `claude plugin list` |
 
 ## Publishing an update (maintainer side)
 
