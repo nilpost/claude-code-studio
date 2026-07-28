@@ -1,0 +1,15 @@
+{
+  "$comment": "Optional add-on to consumer-settings.snippet.json: also enables the Cloudflare MCP plugin (docs + Workers bindings servers). Merge the enabledPlugins key into what consumer-settings.snippet.json already gave you — do not include this $comment. OAuth for the Cloudflare servers triggers on first tool use in each session/account.",
+  "extraKnownMarketplaces": {
+    "claude-code-studio": {
+      "source": {
+        "source": "github",
+        "repo": "nilpost/claude-code-studio"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "studio-core@claude-code-studio": true,
+    "cloudflare-mcp@claude-code-studio": true
+  }
+}
