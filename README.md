@@ -68,6 +68,21 @@ into a repo's `.claude/settings.json`; every cloud session of that repo auto-ins
 plugin. For all-repos or org-wide setups (Pro and Teams/Enterprise), see
 **[docs/deploy-org-wide.md](docs/deploy-org-wide.md)**.
 
+### Cloudflare MCP (optional add-on)
+
+A second plugin, `cloudflare-mcp`, bundles Cloudflare's remote MCP servers (docs +
+Workers bindings by default — see [`plugins/cloudflare-mcp/README.md`](plugins/cloudflare-mcp/README.md)
+for the full server list) using the same local/cloud mechanism as `studio-core`.
+
+```bash
+claude plugin install cloudflare-mcp@claude-code-studio --scope user
+```
+
+For cloud, merge the `enabledPlugins` key from
+[`templates/consumer-settings-cloudflare.snippet.json`](templates/consumer-settings-cloudflare.snippet.json)
+into the repo's `.claude/settings.json`. Each Cloudflare server OAuths on first tool use
+— no tokens stored in this repo.
+
 ## What's inside
 
 | Component | What it does |
@@ -85,6 +100,7 @@ plugin. For all-repos or org-wide setups (Pro and Teams/Enterprise), see
 ```
 .claude-plugin/marketplace.json      Marketplace catalog
 plugins/studio-core/                 The distributable plugin (agents, skills, commands, hooks)
+plugins/cloudflare-mcp/              Optional plugin: Cloudflare remote MCP servers
 knowledge/LEARNINGS.md               Shared, version-controlled cross-project memory
 templates/                           Copy/paste settings snippet for consumer repos
 scripts/                             install-local.sh, sync-learnings.sh

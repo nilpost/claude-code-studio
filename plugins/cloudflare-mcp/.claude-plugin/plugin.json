@@ -1,0 +1,15 @@
+{
+  "name": "cloudflare-mcp",
+  "displayName": "Cloudflare MCP",
+  "version": "0.1.0",
+  "description": "Bundles Cloudflare's remote MCP servers (docs + Workers bindings by default) so they're available in every local project and every cloud session. OAuth triggers automatically on first tool use.",
+  "author": {
+    "name": "nilpost"
+  },
+  "keywords": [
+    "mcp",
+    "cloudflare",
+    "workers",
+    "multi-environment"
+  ]
+}
