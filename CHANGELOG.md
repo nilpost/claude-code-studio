@@ -8,6 +8,16 @@ changing `plugins/<name>/` includes a matching entry here (see
 
 Entries are grouped by date, newest first. Each names the plugin and its new version.
 
+## 2026-07-28 (3)
+
+### studio-core 0.2.2
+
+- **Added**: a `po` (Product Owner orchestrator) Lessons-learned bullet: when acting
+  as an independent reviewer and an explicitly-requested verification step cannot
+  actually be performed (a required tool/MCP server unavailable in context), state
+  that as an explicit gap in the final verdict itself rather than folding a partial
+  check into an overall "GO".
+
 ## 2026-07-28 (2)
 
 ### studio-core 0.2.1
