@@ -74,11 +74,28 @@ claude plugin list
 
 ## Versioning & release
 
-Bump `version` in both `plugins/studio-core/.claude-plugin/plugin.json` and
-`.claude-plugin/marketplace.json` for a notable change. Because the marketplace source
-is the GitHub repo, consumers get updates via `claude plugin marketplace update
-claude-code-studio` (local) or a fresh session (cloud) — see
-[`docs/updating.md`](docs/updating.md).
+**Required, not optional:** any PR that changes files under `plugins/<name>/` must bump
+that plugin's `version` in both `plugins/<name>/.claude-plugin/plugin.json` and its
+entry in `.claude-plugin/marketplace.json` (the two must always match). This is enforced
+by CI — see [`.github/workflows/plugin-version-check.yml`](.github/workflows/plugin-version-check.yml).
+
+Why it's mandatory: `version` is Claude Code's update cache key. If it's unchanged,
+`claude plugin update` fetches nothing new, no matter how many commits landed — an
+un-bumped change is invisible to every already-installed consumer, silently. New
+plugins and changes outside `plugins/` (docs, `scripts/`, CI) don't need a bump; they
+aren't part of what installs.
+
+Follow [semver](https://semver.org):
+
+- **PATCH** — wording/prompt tweaks inside an existing agent or skill, a lesson baked
+  in via `improve-agent`, a bug fix
+- **MINOR** — a new agent, skill, or command; a new plugin
+- **MAJOR** — a rename or removal that breaks an existing `@agent` or `/command`
+  reference
+
+Because the marketplace source is the GitHub repo, consumers get the update via
+`claude plugin marketplace update claude-code-studio` (local) or a fresh session
+(cloud) — see [`docs/updating.md`](docs/updating.md).
 
 ## Commit & PR conventions
 
