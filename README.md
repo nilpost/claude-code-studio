@@ -68,10 +68,12 @@ auto-installs the plugin from the latest `main`:
 
 ```bash
 ./scripts/enable-in-repo.sh /path/to/your-repo
+./scripts/enable-in-repo.sh /path/to/your-repo --push   # ...and commit + push it too
 ```
 
-It merges into any existing `.claude/settings.json` and is safe to re-run; `--dry-run`
-previews. To do it by hand, copy
+It merges into any existing `.claude/settings.json`, is safe to re-run, and is
+self-contained — copy or `curl` just this one script and run it against any repo, no
+studio checkout required. `--dry-run` previews. To do it by hand, copy
 [`templates/consumer-settings.snippet.json`](templates/consumer-settings.snippet.json).
 For all-repos or org-wide setups (Pro and Teams/Enterprise), see
 **[docs/deploy-org-wide.md](docs/deploy-org-wide.md)**.

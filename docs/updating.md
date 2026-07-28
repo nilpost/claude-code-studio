@@ -71,7 +71,7 @@ start**, so a brand-new cloud session is automatically on the latest `main`. The
 | --- | --- |
 | Local, want latest agents/skills | `./scripts/update-studio.sh` → **`/reload-plugins`** |
 | Local, never want to think about it | Enable the opt-in `SessionStart` hook (see above) |
-| A repo where the studio isn't loaded at all | `./scripts/enable-in-repo.sh /path/to/repo`, commit, **`/reload-plugins`** |
+| A repo where the studio isn't loaded at all | `./scripts/enable-in-repo.sh /path/to/repo --push` (or without `--push`, then commit yourself), **`/reload-plugins`** |
 | Session already running, plugin not loaded | Enable it, then **`/reload-plugins`** |
 | Cloud, want latest | **Start a new cloud session** (auto-pulls `main`) |
 | Cloud Option B feels stale | Re-save the environment **setup script** to rebuild the cache |
