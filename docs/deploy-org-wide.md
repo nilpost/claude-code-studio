@@ -8,8 +8,15 @@ Pick the row that matches your account:
 
 | Your account | Best "always-on" method | Needs admin? |
 | --- | --- | --- |
-| **Pro / Max** (individual) | [Local install](#local-machine-pro-one-time) + [cloud env setup script](#cloud-option-b--all-repos-personal-environment-setup-script) or [per-repo snippet](#cloud-option-a--per-repo-guaranteed) | No |
+| **Pro / Max** (individual) | [Local install](#local-machine-pro--one-time) + [cloud env setup script](#cloud-option-b--all-repos-personal-environment-setup-script) or [per-repo snippet](#cloud-option-a--per-repo-guaranteed) | No |
 | **Teams / Enterprise** (whole org) | [Server-managed settings](#org-wide-teams--enterprise-only) | Owner role |
+
+No single mechanism covers local **and** cloud on a Pro/Max account: `~/.claude` is what
+makes it automatic locally, and cloud sessions never see `~/.claude` — the docs are
+explicit that plugins enabled only in user settings do **not** carry over, and that they
+must be declared in the repo's `.claude/settings.json` instead. So Pro needs one local
+step plus one cloud step. Only server-managed settings (Teams/Enterprise) does both at
+once.
 
 ---
 
@@ -94,11 +101,22 @@ claude plugin install studio-core@claude-code-studio --scope user
 # claude plugin install cloudflare-mcp@claude-code-studio --scope user
 ```
 
-The setup script runs before every session in that environment and its output is
-cached, so `studio-core` is present in every cloud session there, regardless of which
-repo you open. This is the closest to "always everywhere" without an org Owner role.
-Requires the environment's network level to allow GitHub (the default **Trusted** level
-does; **None** would block the marketplace fetch).
+This is the closest to "always everywhere" without an org Owner role: `studio-core` is
+present in every cloud session in that environment, regardless of which repo you open,
+with no per-repo edits. Requires the environment's network level to allow GitHub (the
+default **Trusted** level does; **None** would block the marketplace fetch).
+
+> **Trade-off: this route goes stale.** The setup script does *not* run before every
+> session. It runs on the **first** session in the environment; Anthropic then snapshots
+> the filesystem, and later sessions start from that snapshot and **skip the setup
+> script entirely**. Your `plugin install` is frozen into the snapshot, so the studio can
+> be up to **~7 days** behind `main`. The cache rebuilds when you edit the setup script,
+> change the allowed network hosts, or when it expires after roughly seven days.
+>
+> [Option A](#cloud-option-a--per-repo-guaranteed) has the opposite profile: it installs
+> from the marketplace **at every session start**, so it is always on the latest `main`,
+> but it has to be committed per repo. Use both — Option B as blanket coverage for repos
+> you haven't touched, Option A on the repos you actually work in.
 
 > **The marketplace repo must be public for this route.** Setup scripts run *before*
 > Claude Code launches, so the git-proxy auth it configures for in-scope private repos
