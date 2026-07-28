@@ -1,0 +1,33 @@
+name: Plugin Version Check
+
+# Enforces the version-bump rule from CONTRIBUTING.md#versioning--release: a PR
+# that changes files under plugins/<name>/ must bump that plugin's version in
+# BOTH plugins/<name>/.claude-plugin/plugin.json and its marketplace.json entry.
+#
+# Why this is blocking, not a warning: Claude Code uses the plugin's version as
+# its update cache key. `claude plugin update` fetches nothing new when the
+# version string is unchanged, regardless of how many commits landed — so an
+# un-bumped change is invisible to every already-installed consumer, silently.
+# See .github/scripts/check-plugin-versions.sh for the full check, including a
+# secondary consistency check that plugin.json and marketplace.json always agree.
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plugin-version-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  version-check:
+    name: Version bump required for changed plugins
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check plugin versions
+        run: .github/scripts/check-plugin-versions.sh "${{ github.event.pull_request.base.sha }}"

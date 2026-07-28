@@ -119,6 +119,19 @@ scripts/                             install-local · update-studio · enable-in
 docs/                                architecture · deploy-org-wide · updating
 ```
 
+## Changelog
+
+Quick summary of what changed most recently — full history, one entry per version
+bump, in **[CHANGELOG.md](CHANGELOG.md)**. (Not a version-number table here on
+purpose: that's exactly the kind of copy that silently drifts out of sync with
+`plugin.json`, which is the actual bug this changelog exists to stop repeating. Check
+installed versions with `claude plugin list`.)
+
+- **2026-07-28** — `studio-core` bumped to `0.2.0` (a version-discipline catch-up; see
+  CHANGELOG.md for why it was overdue).
+
+See [CHANGELOG.md](CHANGELOG.md) for the full, dated history.
+
 ## Documentation
 
 - **[Architecture](docs/architecture.md)** — design, diagrams, orchestration, learning loop
