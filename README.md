@@ -122,6 +122,18 @@ scripts/                             install-local · update-studio · enable-in
 docs/                                architecture · deploy-org-wide · updating
 ```
 
+## Changelog
+
+Quick summary of what changed most recently — full history, one entry per version
+bump, in **[CHANGELOG.md](CHANGELOG.md)**. (Not a version-number table here on
+purpose: that would duplicate `plugin.json` as a second, unenforced source of truth
+for the same fact. Check installed versions with `claude plugin list`.)
+
+- **2026-07-28** — `cloudflare-mcp` bumped to `0.2.0`: now depends on Cloudflare's
+  official plugin instead of a hand-copied server list.
+
+See [CHANGELOG.md](CHANGELOG.md) for the full, dated history.
+
 ## Documentation
 
 - **[Architecture](docs/architecture.md)** — design, diagrams, orchestration, learning loop

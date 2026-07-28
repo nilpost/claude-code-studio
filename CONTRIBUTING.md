@@ -90,11 +90,11 @@ claude plugin list
 
 ## Versioning & release
 
-Bump `version` in both `plugins/studio-core/.claude-plugin/plugin.json` and
-`.claude-plugin/marketplace.json` for a notable change. Because the marketplace source
-is the GitHub repo, consumers get updates via `claude plugin marketplace update
-claude-code-studio` (local) or a fresh session (cloud) — see
-[`docs/updating.md`](docs/updating.md).
+Bump `version` in both `plugins/<name>/.claude-plugin/plugin.json` and its entry in
+`.claude-plugin/marketplace.json` for a notable change, and add a matching entry to
+[`CHANGELOG.md`](CHANGELOG.md). Because the marketplace source is the GitHub repo,
+consumers get updates via `claude plugin marketplace update claude-code-studio`
+(local) or a fresh session (cloud) — see [`docs/updating.md`](docs/updating.md).
 
 ## Commit & PR conventions
 
