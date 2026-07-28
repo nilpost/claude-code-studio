@@ -1,7 +1,7 @@
 ---
 name: improve-agent
 description: Bake a behavioral lesson into a specific studio agent's definition after it makes a mistake or gets corrected, so the corrected behavior travels in that agent's own prompt. Use when a named studio agent (po, code-review, qa, security, devops, backlog, feature-planning, infra-admin, docs) did something wrong or suboptimal and the fix is a durable change to how THAT agent should behave. For general, agent-agnostic lessons, use capture-learnings instead.
-allowed-tools: Read, Edit, Bash(git *), Bash(*/append_agent_lesson.sh *)
+allowed-tools: Read, Edit, Bash(git *), Bash(*/append_agent_lesson.sh *), Bash(*/push_to_studio.sh *)
 ---
 
 # improve-agent
@@ -48,3 +48,21 @@ agent might not read.
    consumers' next `claude plugin marketplace update`.
 
 Keep edits small and behavioral. The goal is a sharper agent, not a longer one.
+
+## Outside the studio checkout (another project, or a cloud session)
+
+The steps above assume you're inside a checkout of the `claude-code-studio` repo. When
+the plugin is installed but the repo isn't checked out — the agent files live in the
+read-only plugin cache (`${CLAUDE_PLUGIN_ROOT}/agents/`), and editing those is pointless
+(overwritten on the next update, never pushed). Route the fix to the repo over GitHub
+instead:
+
+```
+${CLAUDE_PLUGIN_ROOT}/scripts/push_to_studio.sh agent-lesson \
+  --agent "<agent-name>" --lesson "<terse behavioral directive>"
+```
+
+It clones the public studio repo, appends the lesson under that agent's
+`## Lessons learned` section, pushes a branch, and opens a draft PR. Add `--dry-run` to
+preview. If the push fails for lack of write access here, it preserves the prepared
+commit and tells you where.

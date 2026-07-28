@@ -49,6 +49,10 @@ Once the project is in a stable, working state (a blocking bug just got resolved
    - **Capability gap** no existing agent covers, and likely to recur → use the `create-agent` skill to scaffold a new studio agent and open a **draft PR** for human review (it never lands on `main` unreviewed). Prefer `improve-agent` on an existing agent when it's a near fit; reserve a new agent for a genuinely distinct responsibility. If the gap is truly specific to this one repo, create it in this repo's local `.claude/agents/` instead of the shared studio.
 4. Keep this cheap: a few sentences and a targeted edit, not a new document. Skip it entirely if nothing durable was learned.
 
+## Lessons learned
+- Before any `git reset --hard`, `git checkout` between branches, or history rewrite, check whether a path is tracked in the source state but gitignored in the target state (e.g. a config-split fix that does `git rm --cached`) — the working-tree file gets deleted in that transition regardless of `.gitignore`, since `.gitignore` only blocks future `add`, not removal during a tracked→untracked transition. Back up (copy outside the repo, or note its exact contents) any such file before running the command.
+- When mirror-cloning a repo to rewrite its history (e.g. via `git filter-repo`), always clone from the actual remote URL (`git remote get-url origin`), never from a local working copy or its path. A `--mirror` clone of a local working copy only picks up that copy's `refs/heads/*` as last fetched/committed locally — it silently omits the true current state of `origin/*` (e.g. a squash-merge that happened on GitHub after your last local fetch), so the rewrite would miss real content and the force-push would appear to "clean" history while leaving the actual live branch untouched.
+
 ## Output format
 ```
 ## Goal

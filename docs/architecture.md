@@ -111,6 +111,16 @@ flowchart LR
 `po`'s "Learning cycle" routes automatically: agent-behavior → `improve-agent`,
 general → `capture-learnings`, capability gap → `create-agent`.
 
+### Capturing from another environment
+
+The write-back scripts assume you're inside a checkout of this repo. When the plugin is
+installed in **another project** (or a cloud session) the repo isn't checked out and the
+`knowledge/` base isn't on disk, so `capture-learnings` and `improve-agent` fall back to
+`plugins/studio-core/scripts/push_to_studio.sh`, which clones the public studio repo to a
+temp dir, applies the entry with the repo's own append scripts, pushes a branch, and
+opens a draft PR. That way a lesson learned anywhere still lands back in the studio and
+redistributes on the next update.
+
 ## Repository layout
 
 ```
