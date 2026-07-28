@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 # check-plugin-versions.sh — CI gate: a PR that changes files under plugins/<name>/
-# must bump that plugin's version in BOTH plugins/<name>/.claude-plugin/plugin.json
-# and its entry in .claude-plugin/marketplace.json.
+# must (1) bump that plugin's version in BOTH plugins/<name>/.claude-plugin/plugin.json
+# and its entry in .claude-plugin/marketplace.json, and (2) add a CHANGELOG.md entry.
 #
 # Why: Claude Code uses the plugin's version as its update cache key. A consumer's
 # `claude plugin update` fetches nothing new if the version string is unchanged —
 # new commits alone are invisible to already-installed copies. See
 # CONTRIBUTING.md#versioning--release for the bump criteria (PATCH/MINOR/MAJOR).
+# CHANGELOG.md exists so that staying current is worth doing — an update nobody can
+# read the reason for is easy to skip.
 #
 # Also checks, independent of what changed: every plugin listed in
 # marketplace.json has a version that matches its own plugin.json, at HEAD.
@@ -48,6 +50,13 @@ changed_plugins=$(git diff --name-only "$base"...HEAD -- plugins/ \
   | sed -E 's#^plugins/([^/]+)/.*#\1#' | sort -u)
 
 echo "Plugins with changed files in this diff: ${changed_plugins:-(none)}"
+
+if [ -n "$changed_plugins" ]; then
+  if ! git diff --name-only "$base"...HEAD -- CHANGELOG.md | grep -q .; then
+    echo "::error file=CHANGELOG.md::Plugin(s) changed (${changed_plugins}) but CHANGELOG.md was not. Add an entry — see CONTRIBUTING.md#versioning--release."
+    fail=1
+  fi
+fi
 
 for name in $changed_plugins; do
   manifest="plugins/$name/.claude-plugin/plugin.json"
