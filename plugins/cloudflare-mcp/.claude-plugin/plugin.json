@@ -1,8 +1,8 @@
 {
   "name": "cloudflare-mcp",
   "displayName": "Cloudflare MCP",
-  "version": "0.1.0",
-  "description": "Bundles Cloudflare's remote MCP servers (docs + Workers bindings by default) so they're available in every local project and every cloud session. OAuth triggers automatically on first tool use.",
+  "version": "0.2.0",
+  "description": "Depends on Cloudflare's own official plugin (cloudflare@cloudflare) so it installs automatically wherever this plugin is enabled — local project, cloud session, or org-wide — using the same mechanism as studio-core. No MCP servers are declared here directly; see plugins/cloudflare-mcp/README.md.",
   "author": {
     "name": "nilpost"
   },
@@ -11,5 +11,8 @@
     "cloudflare",
     "workers",
     "multi-environment"
+  ],
+  "dependencies": [
+    { "name": "cloudflare", "marketplace": "cloudflare" }
   ]
 }

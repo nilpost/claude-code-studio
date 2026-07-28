@@ -4,10 +4,26 @@ Thanks for improving `claude-code-studio`. This repo is a Claude Code plugin
 marketplace, so "contributing" mostly means adding or refining **agents**, **skills**,
 and **commands** under `plugins/studio-core/`, then validating and opening a PR.
 
-The catalog also publishes `plugins/cloudflare-mcp/`, an optional add-on that carries
-only MCP server declarations. Adding a plugin means a new directory under `plugins/`
-with its own `.claude-plugin/plugin.json`, plus an entry in `.claude-plugin/marketplace.json`
-whose `name` and `version` match that manifest.
+The catalog also publishes `plugins/cloudflare-mcp/`, an optional add-on. Adding a
+plugin means a new directory under `plugins/` with its own `.claude-plugin/plugin.json`,
+plus an entry in `.claude-plugin/marketplace.json` whose `name` and `version` match that
+manifest.
+
+### Depending on a plugin from another marketplace
+
+`cloudflare-mcp` doesn't declare MCP servers itself — it has a `dependencies` entry in
+`plugin.json` pointing at Cloudflare's own official plugin, so enabling it here pulls in
+their actual, maintained servers instead of a copy that goes stale. Prefer this pattern
+over hand-copying another vendor's config whenever they publish their own plugin.
+
+Two things this requires: the target marketplace name must be listed in this repo's own
+`allowCrossMarketplaceDependenciesOn` (`.claude-plugin/marketplace.json`) — Claude Code
+refuses cross-marketplace dependencies otherwise — and the consumer must have that
+target marketplace added (`claude plugin marketplace add <owner>/<repo>`) for the
+dependency to resolve; it is not added automatically. See
+[`plugins/cloudflare-mcp/README.md`](plugins/cloudflare-mcp/README.md) for the verified
+failure and resolution behavior, and the [plugin-dependencies docs](https://code.claude.com/docs/en/plugin-dependencies)
+for the full mechanism.
 
 ## Ground rules
 

@@ -55,11 +55,15 @@ flowchart TD
 
 The catalog publishes two plugins. `studio-core` is the one that matters here: it
 bundles agents, skills, commands, and (opt-in) hooks, and everything below describes
-it. `cloudflare-mcp` is an optional add-on that carries only remote MCP server
-declarations — no agents, skills, or learning-loop involvement — and exists to prove
-the same distribution channel works for MCP config. Consumers reach either plugin the
-same three ways depending on account and environment; see
-[`deploy-org-wide.md`](deploy-org-wide.md).
+it. `cloudflare-mcp` is an optional add-on with no MCP declarations of its own — it
+`dependencies`-points at Cloudflare's own official plugin (`cloudflare@cloudflare`)
+in their `cloudflare/skills` marketplace, so enabling it here pulls in Cloudflare's
+actual, actively-maintained servers rather than a copy that goes stale. This is a
+cross-marketplace dependency, explicitly allowed via
+`allowCrossMarketplaceDependenciesOn` in [`marketplace.json`](../.claude-plugin/marketplace.json);
+see [`plugins/cloudflare-mcp/README.md`](../plugins/cloudflare-mcp/README.md) for the
+mechanics. Consumers reach either plugin the same three ways depending on account and
+environment; see [`deploy-org-wide.md`](deploy-org-wide.md).
 
 ## Agent orchestration
 

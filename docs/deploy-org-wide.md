@@ -97,7 +97,9 @@ script**):
 ```bash
 claude plugin marketplace add nilpost/claude-code-studio
 claude plugin install studio-core@claude-code-studio --scope user
-# optional add-on:
+# optional add-on — cloudflare-mcp depends on Cloudflare's own official plugin, so
+# both lines are needed (the marketplace add resolves the dependency as a side effect):
+# claude plugin marketplace add cloudflare/skills
 # claude plugin install cloudflare-mcp@claude-code-studio --scope user
 ```
 
