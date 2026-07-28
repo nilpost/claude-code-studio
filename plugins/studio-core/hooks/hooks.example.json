@@ -1,13 +1,32 @@
 {
   "//": [
-    "OPT-IN auto-capture — NOT loaded by default. The active hooks.json ships",
-    "empty so the studio never writes to your knowledge base without you asking.",
-    "To enable end-of-session reflection, copy the `hooks` block below into",
-    "hooks.json and re-enable the plugin. The command is a lightweight nudge to",
-    "run /learn; swap it for your own reflection script for fully automatic",
-    "capture."
+    "OPT-IN examples — NOT loaded by default. The active hooks.json ships empty",
+    "so the studio never writes to your knowledge base, and never runs commands,",
+    "without you asking. To enable either block below, copy it into hooks.json",
+    "and re-enable the plugin.",
+    "",
+    "SessionStart — keeps a LOCAL install on the latest studio. Refetches the",
+    "marketplace in the background at session start, so the NEXT session you open",
+    "is current; it cannot update the session it runs in, because agents and",
+    "commands register before hooks fire. Cloud sessions do not need this (they",
+    "install fresh from main at session start already). Skip it if you would",
+    "rather not have a network call on every session start — run",
+    "scripts/update-studio.sh by hand instead.",
+    "",
+    "SessionEnd — a lightweight nudge to run /learn. Swap the echo for your own",
+    "reflection script for fully automatic capture."
   ],
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v claude >/dev/null 2>&1 && (claude plugin marketplace update claude-code-studio >/dev/null 2>&1 &) ; exit 0"
+          }
+        ]
+      }
+    ],
     "SessionEnd": [
       {
         "hooks": [

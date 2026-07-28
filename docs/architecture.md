@@ -29,10 +29,14 @@ flowchart TD
             CMD["commands/<br/>/learn /improve-agent /create-agent"]
             HK["hooks/ (opt-in)"]
         end
+        subgraph CF["plugins/cloudflare-mcp (optional)"]
+            MCP[".mcp.json<br/>remote Cloudflare MCP servers"]
+        end
         KB["knowledge/LEARNINGS.md<br/>(shared memory)"]
     end
 
     MP --> Plugin
+    MP --> CF
 
     subgraph Local["Local machine"]
         LSET["~/.claude (user scope)"]
@@ -49,8 +53,12 @@ flowchart TD
     Plugin -->|"admin console"| Org
 ```
 
-A single plugin (`studio-core`) bundles agents, skills, commands, and (opt-in) hooks.
-Consumers reach it three ways depending on account and environment; see
+The catalog publishes two plugins. `studio-core` is the one that matters here: it
+bundles agents, skills, commands, and (opt-in) hooks, and everything below describes
+it. `cloudflare-mcp` is an optional add-on that carries only remote MCP server
+declarations — no agents, skills, or learning-loop involvement — and exists to prove
+the same distribution channel works for MCP config. Consumers reach either plugin the
+same three ways depending on account and environment; see
 [`deploy-org-wide.md`](deploy-org-wide.md).
 
 ## Agent orchestration
@@ -124,17 +132,20 @@ redistributes on the next update.
 ## Repository layout
 
 ```
-.claude-plugin/marketplace.json      Marketplace catalog (lists studio-core)
-plugins/studio-core/                 The distributable plugin
+.claude-plugin/marketplace.json      Marketplace catalog (lists both plugins)
+plugins/studio-core/                 The main distributable plugin
   .claude-plugin/plugin.json         Plugin manifest
   agents/                            po + 8 specialists + example template
   skills/                            capture / recall / improve / create + example
   commands/                          /learn, /improve-agent, /create-agent
-  hooks/                             opt-in end-of-session capture (hooks.json empty)
+  hooks/                             opt-in hooks (hooks.json ships empty)
+  scripts/push_to_studio.sh          write-back from outside a studio checkout
+plugins/cloudflare-mcp/              Optional add-on: remote Cloudflare MCP servers
 knowledge/LEARNINGS.md               Shared, version-controlled cross-project memory
-.claude/settings.json                Loads studio-core into THIS repo's own sessions
-templates/consumer-settings.snippet.json   Copy/paste block for other repos
-scripts/                             install-local.sh, sync-learnings.sh
+.claude/settings.json                Loads the plugins into THIS repo's own sessions
+templates/                           Copy/paste settings blocks for other repos
+scripts/                             install-local, update-studio, enable-in-repo,
+                                     mirror-local, sync-learnings
 docs/                                deploy-org-wide, updating, architecture
 ```
 

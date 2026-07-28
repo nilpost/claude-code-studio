@@ -9,6 +9,7 @@
     }
   },
   "enabledPlugins": {
-    "studio-core@claude-code-studio": true
+    "studio-core@claude-code-studio": true,
+    "cloudflare-mcp@claude-code-studio": true
   }
 }

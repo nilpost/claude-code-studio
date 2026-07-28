@@ -14,6 +14,15 @@
       "author": {
         "name": "nilpost"
       }
+    },
+    {
+      "name": "cloudflare-mcp",
+      "source": "./plugins/cloudflare-mcp",
+      "description": "Cloudflare remote MCP servers (docs + Workers bindings by default), available in every local project and every cloud session.",
+      "version": "0.1.0",
+      "author": {
+        "name": "nilpost"
+      }
     }
   ]
 }
