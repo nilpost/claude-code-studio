@@ -90,11 +90,32 @@ claude plugin list
 
 ## Versioning & release
 
-Bump `version` in both `plugins/<name>/.claude-plugin/plugin.json` and its entry in
-`.claude-plugin/marketplace.json` for a notable change, and add a matching entry to
-[`CHANGELOG.md`](CHANGELOG.md). Because the marketplace source is the GitHub repo,
-consumers get updates via `claude plugin marketplace update claude-code-studio`
-(local) or a fresh session (cloud) — see [`docs/updating.md`](docs/updating.md).
+**Required, not optional:** any PR that changes files under `plugins/<name>/` must (1)
+bump that plugin's `version` in both `plugins/<name>/.claude-plugin/plugin.json` and its
+entry in `.claude-plugin/marketplace.json` (the two must always match), and (2) add an
+entry to [`CHANGELOG.md`](CHANGELOG.md). Both are enforced by CI — see
+[`.github/workflows/plugin-version-check.yml`](.github/workflows/plugin-version-check.yml).
+Also update the "Quick summary" bullet list in `README.md`'s Changelog section — that
+part isn't CI-checked (it's prose, not a fact CI can verify), so it's on you to keep it
+current; don't let it become one more thing that silently drifts.
+
+Why it's mandatory: `version` is Claude Code's update cache key. If it's unchanged,
+`claude plugin update` fetches nothing new, no matter how many commits landed — an
+un-bumped change is invisible to every already-installed consumer, silently. New
+plugins and changes outside `plugins/` (docs, `scripts/`, CI) don't need a bump; they
+aren't part of what installs.
+
+Follow [semver](https://semver.org):
+
+- **PATCH** — wording/prompt tweaks inside an existing agent or skill, a lesson baked
+  in via `improve-agent`, a bug fix
+- **MINOR** — a new agent, skill, or command; a new plugin
+- **MAJOR** — a rename or removal that breaks an existing `@agent` or `/command`
+  reference
+
+Because the marketplace source is the GitHub repo, consumers get the update via
+`claude plugin marketplace update claude-code-studio` (local) or a fresh session
+(cloud) — see [`docs/updating.md`](docs/updating.md).
 
 ## Commit & PR conventions
 

@@ -63,16 +63,19 @@ Add these two keys to the repo's **`.claude/settings.json`** (create the file if
 needed) and commit. Every cloud session of that repo then auto-installs and enables the
 plugin at session start, always from the current `main`.
 
-From a studio checkout, this is one command per repo — it merges the keys into whatever
-that repo's settings file already contains, and is safe to re-run:
+This is one command per repo — it merges the keys into whatever that repo's settings
+file already contains, is safe to re-run, and is self-contained: copy or `curl` just
+this one script and run it against any repo, no studio checkout required.
 
 ```bash
 ./scripts/enable-in-repo.sh /path/to/other-repo                    # studio-core
 ./scripts/enable-in-repo.sh /path/to/other-repo --with-cloudflare  # + Cloudflare MCP
 ./scripts/enable-in-repo.sh /path/to/other-repo --dry-run          # preview only
+./scripts/enable-in-repo.sh /path/to/other-repo --push             # commit + push too
 ```
 
-Then commit the result in that repo. To do it by hand instead, merge the block from
+Then commit the result in that repo (or pass `--push` to do that for you). To do it by
+hand instead, merge the block from
 [`../templates/consumer-settings.snippet.json`](../templates/consumer-settings.snippet.json):
 
 ```json

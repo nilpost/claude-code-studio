@@ -68,10 +68,12 @@ auto-installs the plugin from the latest `main`:
 
 ```bash
 ./scripts/enable-in-repo.sh /path/to/your-repo
+./scripts/enable-in-repo.sh /path/to/your-repo --push   # ...and commit + push it too
 ```
 
-It merges into any existing `.claude/settings.json` and is safe to re-run; `--dry-run`
-previews. To do it by hand, copy
+It merges into any existing `.claude/settings.json`, is safe to re-run, and is
+self-contained — copy or `curl` just this one script and run it against any repo, no
+studio checkout required. `--dry-run` previews. To do it by hand, copy
 [`templates/consumer-settings.snippet.json`](templates/consumer-settings.snippet.json).
 For all-repos or org-wide setups (Pro and Teams/Enterprise), see
 **[docs/deploy-org-wide.md](docs/deploy-org-wide.md)**.
@@ -126,11 +128,14 @@ docs/                                architecture · deploy-org-wide · updating
 
 Quick summary of what changed most recently — full history, one entry per version
 bump, in **[CHANGELOG.md](CHANGELOG.md)**. (Not a version-number table here on
-purpose: that would duplicate `plugin.json` as a second, unenforced source of truth
-for the same fact. Check installed versions with `claude plugin list`.)
+purpose: that's exactly the kind of copy that silently drifts out of sync with
+`plugin.json`, which is the actual bug this changelog exists to stop repeating. Check
+installed versions with `claude plugin list`.)
 
 - **2026-07-28** — `cloudflare-mcp` bumped to `0.2.0`: now depends on Cloudflare's
   official plugin instead of a hand-copied server list.
+- **2026-07-28** — `studio-core` bumped to `0.2.0` (a version-discipline catch-up; see
+  CHANGELOG.md for why it was overdue).
 
 See [CHANGELOG.md](CHANGELOG.md) for the full, dated history.
 
