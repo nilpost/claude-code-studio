@@ -142,7 +142,8 @@ plugins/studio-core/                 The main distributable plugin
   agents/                            po + 8 specialists + example template
   skills/                            capture / recall / improve / create + example
   commands/                          /learn, /improve-agent, /create-agent
-  hooks/                             opt-in hooks (hooks.json ships empty)
+  hooks/                             SessionStart (marketplace refresh) on by default;
+                                     hooks.example.json has an opt-in SessionEnd extra
   scripts/push_to_studio.sh          write-back from outside a studio checkout
 plugins/cloudflare-mcp/              Optional add-on: remote Cloudflare MCP servers
 knowledge/LEARNINGS.md               Shared, version-controlled cross-project memory
@@ -155,8 +156,11 @@ docs/                                deploy-org-wide, updating, architecture
 
 ## Trust & safety notes
 
-- Agents and skills contain **no secrets**; the plugin ships `hooks.json` empty so
-  nothing runs or writes without the user asking.
+- Agents and skills contain **no secrets**. The one hook that ships enabled by default
+  (`SessionStart`, a background `claude plugin marketplace update`) only ever reads —
+  it never writes to your knowledge base or any file without you asking; the only
+  opt-in extra (`SessionEnd`, a nudge to run `/learn`) stays off unless you copy it in
+  from `hooks.example.json` yourself.
 - `knowledge/LEARNINGS.md` holds **generalized** lessons only — no project-identifying
   or confidential detail.
 - `create-agent` and `improve-agent` changes always land through a **PR**, never

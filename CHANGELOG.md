@@ -8,6 +8,22 @@ changing `plugins/<name>/` includes a matching entry here (see
 
 Entries are grouped by date, newest first. Each names the plugin and its new version.
 
+## 2026-07-29
+
+### studio-core 0.3.0
+
+- **Changed**: the `SessionStart` hook (background `claude plugin marketplace update`,
+  refreshes a local install so the *next* session is current) now ships **enabled by
+  default** in `hooks.json`, instead of living opt-in in `hooks.example.json`. It only
+  ever reads — no writes, same as before. `hooks.example.json` now documents just the
+  remaining opt-in extra (`SessionEnd`, a nudge to run `/learn`). MINOR bump: this
+  changes default runtime behavior for every consumer, not a wording tweak.
+- Docs updated to match everywhere the old "hooks ship empty" claim appeared:
+  `README.md`, `docs/architecture.md`, `docs/updating.md`, `docs/deploy-org-wide.md`
+  (including a corrected note on what the server-managed-settings security-approval
+  dialog does — the previous claim that enabling the plugin "should not trigger" it no
+  longer holds now that a hook ships by default).
+
 ## 2026-07-28 (3)
 
 ### studio-core 0.2.2
