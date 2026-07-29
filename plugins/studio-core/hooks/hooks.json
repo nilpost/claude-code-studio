@@ -1,3 +1,24 @@
 {
-  "hooks": {}
+  "//": [
+    "SessionStart is ON by default: refetches the studio marketplace in the",
+    "background at session start, so the NEXT local session you open is",
+    "current. It cannot update the session it runs in — agents and commands",
+    "register before hooks fire. This is a no-op in cloud sessions (they",
+    "install fresh from main at every session start already, and 'claude' is",
+    "not a command available to run from inside one).",
+    "",
+    "hooks.example.json documents an additional, still-opt-in SessionEnd nudge."
+  ],
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v claude >/dev/null 2>&1 && (claude plugin marketplace update claude-code-studio >/dev/null 2>&1 &) ; exit 0"
+          }
+        ]
+      }
+    ]
+  }
 }

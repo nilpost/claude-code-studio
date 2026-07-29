@@ -43,9 +43,9 @@ claude plugin install studio-core@claude-code-studio --scope user
 This writes to your own `~/.claude/`, so the studio is always on in every local
 project on that machine. Nothing to hand-edit.
 
-To stay on the latest, run `./scripts/update-studio.sh` periodically, or enable the
-opt-in `SessionStart` hook described in [`updating.md`](updating.md) so each new
-session starts current.
+To stay on the latest, run `./scripts/update-studio.sh` periodically — or do nothing:
+a `SessionStart` hook ships on by default and does this in the background at the start
+of every local session, so each new one starts current. See [`updating.md`](updating.md).
 
 If you author the studio yourself, `./scripts/mirror-local.sh` skips the install and
 update cycle entirely: it symlinks the plugin into `~/.claude/skills/`, so every local
@@ -191,9 +191,16 @@ provider (Bedrock / Vertex / Foundry) or a custom `ANTHROPIC_BASE_URL`.
 **Notes:**
 
 - Applies uniformly to all org users — no per-group targeting yet.
-- `hooks.json` ships empty, so enabling the plugin should not trigger the
-  server-managed-settings security-approval dialog (that fires only for payloads
-  delivering hooks, shell commands, custom env vars, or `claudeMd`).
+- `studio-core` ships one hook enabled by default (`SessionStart`: a background
+  `claude plugin marketplace update`, no writes) — [`plugins/studio-core/hooks/hooks.json`](../plugins/studio-core/hooks/hooks.json).
+  The [server-managed-settings security-approval dialog](https://code.claude.com/docs/en/server-managed-settings#security-approval-dialogs)
+  is documented to fire on "any hook definition" being delivered to a session; expect
+  members to see it the first time this reaches them, and plan for that rather than
+  assuming a silent rollout. (The admin's own JSON payload here is still just
+  `extraKnownMarketplaces` + `enabledPlugins` — Anthropic's docs don't spell out
+  whether that dialog inspects an *installed plugin's* own hooks the same way it does
+  a hook declared directly in the payload; we haven't been able to verify that distinction
+  end-to-end, so don't rely on it going either way.)
 - MDM-locked machines (optional): server-managed settings already cover unmanaged
   devices and cloud; mirror the same two keys in an endpoint-managed
   `managed-settings.json`/MDM profile if you also want OS-level enforcement.

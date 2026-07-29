@@ -27,8 +27,9 @@ and skills accumulate knowledge across projects instead of starting cold each ti
   behavioral fixes baked into the agents themselves.
 - **Self-extending** — when a recurring capability gap appears, `create-agent`
   scaffolds a new specialist and opens a draft PR.
-- **Safe by default** — no secrets, hooks ship disabled, and all self-modifications go
-  through PRs.
+- **Safe by default** — no secrets, the one hook enabled out of the box only ever
+  reads (a background marketplace refresh, never a write), and all self-modifications
+  go through PRs.
 
 ## How it works
 
@@ -132,6 +133,8 @@ purpose: that's exactly the kind of copy that silently drifts out of sync with
 `plugin.json`, which is the actual bug this changelog exists to stop repeating. Check
 installed versions with `claude plugin list`.)
 
+- **2026-07-29** — `studio-core` bumped to `0.3.0`: the marketplace-refresh
+  `SessionStart` hook now ships **enabled by default** (read-only; was opt-in).
 - **2026-07-28** — `studio-core` bumped to `0.2.2`: `po` now states explicitly
   when a requested reviewer check couldn't be run, instead of folding it into
   an overall "GO".

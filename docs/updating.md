@@ -33,11 +33,12 @@ claude plugin update studio-core@claude-code-studio    # update the installed pl
 Then run **`/reload-plugins`** so updated agents and commands take effect. Skills are
 current immediately either way. Check what you have with `claude plugin list`.
 
-To avoid remembering this at all, enable the opt-in `SessionStart` hook in
-[`plugins/studio-core/hooks/hooks.example.json`](../plugins/studio-core/hooks/hooks.example.json):
-it refetches the marketplace in the background at session start, so each new session
-you open is current. It can't update the session it runs in — agents and commands
-register before hooks fire.
+You mostly won't need to remember this: a `SessionStart` hook ships **on by default**
+in `plugins/studio-core/hooks/hooks.json` and does the marketplace-update half of this
+for you, in the background, at the start of every local session. It can't update the
+session it runs in — agents and commands register before hooks fire — so it makes the
+*next* session current, not the one it fires in. To disable it, disable the plugin (or
+maintain your own fork of `hooks.json`); there's no narrower per-hook opt-out today.
 
 The marketplace source is the GitHub repo with no pinned ref, so `marketplace update`
 always pulls the latest `main`; a `version` bump in `plugin.json` / `marketplace.json`
@@ -70,7 +71,7 @@ start**, so a brand-new cloud session is automatically on the latest `main`. The
 | Situation | What to do |
 | --- | --- |
 | Local, want latest agents/skills | `./scripts/update-studio.sh` → **`/reload-plugins`** |
-| Local, never want to think about it | Enable the opt-in `SessionStart` hook (see above) |
+| Local, never want to think about it | Nothing to do — the `SessionStart` hook does this already |
 | A repo where the studio isn't loaded at all | `./scripts/enable-in-repo.sh /path/to/repo --push` (or without `--push`, then commit yourself), **`/reload-plugins`** |
 | Session already running, plugin not loaded | Enable it, then **`/reload-plugins`** |
 | Cloud, want latest | **Start a new cloud session** (auto-pulls `main`) |
