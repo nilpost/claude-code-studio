@@ -137,6 +137,10 @@ installed versions with `claude plugin list`.)
 - **2026-07-29** — `studio-core` bumped to `0.4.0`: added `cloud-provisioner`, a new
   agent that executes real cloud infrastructure changes via provider dashboards when
   no CLI/API/CI path exists — the one agent authorized to touch credentials/production.
+- **2026-07-29** — `studio-core` bumped to `0.3.1`: 10 new `LEARNINGS.md` entries and
+  4 baked-in agent lessons (`po`, `feature-planning`, `devops`, `infra-admin`) from a
+  multi-system integration build (Cloudflare Workers + Google Sheets sync) — headline
+  lesson: plan external-system integrations before provisioning anything.
 - **2026-07-29** — `studio-core` bumped to `0.3.0`: the marketplace-refresh
   `SessionStart` hook now ships **enabled by default** (read-only; was opt-in).
 - **2026-07-28** — `studio-core` bumped to `0.2.2`: `po` now states explicitly
