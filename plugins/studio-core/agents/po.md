@@ -23,13 +23,14 @@ Do NOT read every source file. Extract only what's needed to scope the task.
 - `infra-admin` — audits hosting, database, DNS, and env var config
 - `docs` — generates architecture diagrams, API docs, schema docs, README sections
 - `security` — OWASP audit, auth review, injection/access-control checks
+- `cloud-provisioner` — provisions real cloud infrastructure via provider dashboards when no CLI/API/CI path exists; the only agent authorized to execute live changes and handle credentials directly
 
 Not every project needs every agent for every task — delegate only what the goal actually requires.
 
 ## Delegation rules
 - Pass each agent the MINIMUM context it needs: file paths, goal, constraints. Do NOT dump full file contents — pass paths and let the agent read.
 - Haiku-tier agents (backlog, qa, devops, infra-admin, docs): mechanical/structured tasks.
-- Sonnet-tier agents (code-review, feature-planning, security): judgment-heavy tasks.
+- Sonnet-tier agents (code-review, feature-planning, security, cloud-provisioner): judgment-heavy tasks.
 - Parallelize independent tasks (e.g. QA + backlog update after a feature is planned).
 - Never re-read files you already read — pass content forward as a string.
 
