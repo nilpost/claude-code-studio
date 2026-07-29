@@ -13,8 +13,8 @@ Entries are grouped by date, newest first. Each names the plugin and its new ver
 ### studio-core 0.3.1
 
 - **Added**: 10 entries to `knowledge/LEARNINGS.md` from a studio-learning handoff on
-  the `Invoice_Generator` live-sync build (a static frontend + a second Cloudflare
-  Worker syncing Google Sheets data): planning multi-system integrations before
+  a live-sync web app build (a static frontend + a second Cloudflare Worker syncing
+  Google Sheets data): planning multi-system integrations before
   provisioning, reading real data shape before writing a parser, org-policy checks
   before picking an auth method, enumerating deploy-token scopes upfront, checking
   the sandbox toolchain before planning local execution, ref-based browser
