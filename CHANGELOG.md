@@ -10,6 +10,21 @@ Entries are grouped by date, newest first. Each names the plugin and its new ver
 
 ## 2026-07-29
 
+### studio-core 0.4.0
+
+- **Added**: a new `cloud-provisioner` agent (via `create-agent`), proposed in the
+  `Invoice_Generator` studio-learning handoff. Fills a genuine gap: `infra-admin` and
+  `devops` are explicitly read-only advisors that never touch credentials or modify
+  production, but the handoff session had live browser access and provisioned real
+  infrastructure (Workers, a custom domain, a KV namespace, secrets, a GCP project, an
+  OAuth client) by driving dashboards directly — no existing agent covered *doing*
+  that. Encodes the runbook from the handoff: plan before provisioning, prefer
+  CLI/API/CI over the dashboard, click by ref not coordinate, strict secret-handling
+  rules (never transcribe by eye, never print a live credential, roll anything shown
+  once and not copied), confirm before irreversible actions, and verify by hitting the
+  real endpoint rather than trusting a dashboard success toast. Registered with `po`.
+  MINOR bump: new agent.
+
 ### studio-core 0.3.0
 
 - **Changed**: the `SessionStart` hook (background `claude plugin marketplace update`,
