@@ -133,6 +133,10 @@ purpose: that's exactly the kind of copy that silently drifts out of sync with
 `plugin.json`, which is the actual bug this changelog exists to stop repeating. Check
 installed versions with `claude plugin list`.)
 
+- **2026-07-29** — `studio-core` bumped to `0.3.1`: 10 new `LEARNINGS.md` entries and
+  4 baked-in agent lessons (`po`, `feature-planning`, `devops`, `infra-admin`) from a
+  multi-system integration build (Cloudflare Workers + Google Sheets sync) — headline
+  lesson: plan external-system integrations before provisioning anything.
 - **2026-07-29** — `studio-core` bumped to `0.3.0`: the marketplace-refresh
   `SessionStart` hook now ships **enabled by default** (read-only; was opt-in).
 - **2026-07-28** — `studio-core` bumped to `0.2.2`: `po` now states explicitly

@@ -10,6 +10,23 @@ Entries are grouped by date, newest first. Each names the plugin and its new ver
 
 ## 2026-07-29
 
+### studio-core 0.3.1
+
+- **Added**: 10 entries to `knowledge/LEARNINGS.md` from a studio-learning handoff on
+  a live-sync web app build (a static frontend + a second Cloudflare Worker syncing
+  Google Sheets data): planning multi-system integrations before
+  provisioning, reading real data shape before writing a parser, org-policy checks
+  before picking an auth method, enumerating deploy-token scopes upfront, checking
+  the sandbox toolchain before planning local execution, ref-based browser
+  automation / un-automatable cross-origin editors, never transcribing secrets by
+  eye, CORS on cross-origin Workers, `paths:` filters on multi-deployable repos, and
+  cloud-sync folders corrupting git object stores.
+- **Changed** (`improve-agent`): baked the headline lesson from the same handoff —
+  plan before provisioning — into `po` and `feature-planning` (an explicit
+  external-dependency discovery step before build steps); baked deploy-token-scope
+  and path-filter lessons into `devops`; baked an org-policy/auth-fallback check into
+  `infra-admin`. PATCH bump: lessons baked into existing agents, no new agent/skill.
+
 ### studio-core 0.3.0
 
 - **Changed**: the `SessionStart` hook (background `claude plugin marketplace update`,
