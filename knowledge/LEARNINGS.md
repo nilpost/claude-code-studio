@@ -24,6 +24,56 @@ the next `claude plugin marketplace update`.
 
 <!-- Captured entries below. Newest first. -->
 
+## 2026-07-29 — Invoice_Generator — Plan multi-system integrations before touching any dashboard
+- **Context:** Wiring a static frontend + a sync-proxy Worker + Google Sheets auth, done by jumping straight into browser provisioning
+- **Lesson:** For any task spanning more than one external system (hosting + data source + auth + CI), write a short plan FIRST that answers: (1) what is the real shape of the source data, (2) which auth methods the org actually permits, (3) what tooling exists in this sandbox, (4) the full set of API scopes/permissions needed, (5) what triggers each deploy. Discovering these serially mid-build causes a rework cycle per discovery and burns very large amounts of tokens and wall-clock. The cost of a 15-minute planning pass is far below the cost of one rework.
+- **Trigger:** integration, provisioning, multi-system, third-party API, oauth, dashboard setup, plan first, rework, token spend, scope creep
+
+## 2026-07-29 — Invoice_Generator — Read the actual data source before writing a parser against it
+- **Context:** A reference worker assumed a long Month | Category | Amount table; the real spreadsheet was a wide category-rows x month-columns grid with bold subtotal rows and nested line items
+- **Lesson:** Never write or commit a parser based on a reference implementation's assumed schema. Open the real source first and confirm: orientation (long vs wide), where the header row actually starts (real sheets have title/metadata rows above it), which rows are subtotals vs already-summed children (double-counting risk), sentinel/total rows that end the table, and how numbers are formatted (currency symbols and thousands separators make Number() return NaN). Locate the header by label rather than assuming row 1, and map columns by name so column order does not matter.
+- **Trigger:** parser, spreadsheet, google sheets, schema assumption, wide format, long format, header row, currency parsing, NaN, subtotal, double count
+
+## 2026-07-29 — Invoice_Generator — Verify org policy permits an auth method before building on it
+- **Context:** Created a GCP project, enabled the API, and created a service account — only then hit a Workspace org policy blocking service-account key creation
+- **Lesson:** Google Workspace orgs commonly enforce iam.disableServiceAccountKeyCreation, which blocks exporting service-account keys entirely. Confirm the intended auth method is actually permitted before building the project/service-account/API scaffolding around it. When keys are blocked and no admin exception is available, the working fallback for server-to-server access is an OAuth client + one-time consent + a stored refresh token (grant_type=refresh_token), authenticating as a real user account that has its own access to the resource. Note the trade-off: access is then tied to that human account rather than a dedicated bot identity.
+- **Trigger:** service account, iam.disableServiceAccountKeyCreation, org policy, workspace, oauth, refresh token, google api, auth blocked, jwt bearer
+
+## 2026-07-29 — Invoice_Generator — Provision all required API token scopes before the first deploy
+- **Context:** A Cloudflare deploy token was created with only account-level Workers Scripts:Edit; deploy then failed with Authentication error [code: 10000] on /zones/<id>/workers/routes
+- **Lesson:** Deploying a Worker that owns a custom domain/route needs TWO permissions, not one: account-level Workers Scripts: Edit AND zone-level Workers Routes: Edit scoped to that domain. More generally, before creating a deploy token, list every API endpoint the deploy tool will touch and map each to its scope — a token that works for the code upload can still fail at the routing step. Discovering this late costs a token recreation plus a secret rotation plus a re-run.
+- **Trigger:** cloudflare, api token, wrangler deploy, workers routes, workers scripts, authentication error 10000, zone scope, permissions, custom domain
+
+## 2026-07-29 — Invoice_Generator — Check for the runtime toolchain before planning local execution
+- **Context:** Planned to run node --test and npx wrangler deploy locally; neither node, npm, nor npx existed in the session sandbox
+- **Lesson:** Verify the required runtime/CLI is actually present (which node npm npx) before designing a workflow around running it locally. When it is absent and installing is not warranted, route execution through CI instead — commit a workflow and trigger it — rather than improvising. Also be explicit with the user about what could NOT be verified locally: unit tests that never ran are not passing tests, and saying so plainly matters more than appearing complete.
+- **Trigger:** node not found, npx, npm, wrangler, sandbox toolchain, which node, ci fallback, tests not run, unverified
+
+## 2026-07-29 — Invoice_Generator — Use ref-based clicks; cross-origin editors cannot be automated
+- **Context:** Provisioning Cloudflare Workers, KV, and secrets by driving the dashboard in a browser session
+- **Lesson:** (1) Coordinate-based clicking is unreliable when the screenshot's pixel space does not match the page's CSS pixel space (observed ~0.625 scale), and the scale CHANGES when a tab is fronted/backgrounded — many clicks silently hit the wrong element or nothing. Prefer read_page -> ref -> click-by-ref, and form_input by ref for fields. If coordinates are unavoidable, front the tab first and take a fresh screenshot immediately before each click. (2) Some dashboard code editors (e.g. Monaco in a cross-origin iframe) cannot be typed into at all by page automation — do not burn turns retrying; deliver the code by another path such as a CI deploy. (3) Always pass the explicit tabId on multi-tab work: an un-targeted action goes to whichever tab is fronted and can land input in the wrong page.
+- **Trigger:** browser automation, coordinate click, screenshot scale, ref, read_page, form_input, monaco, cross-origin iframe, tabId, wrong tab
+
+## 2026-07-29 — Invoice_Generator — Extract secret values programmatically, never read them off a screenshot
+- **Context:** An OAuth refresh token and an API token were read visually from dashboard screenshots and retyped
+- **Lesson:** Visually transcribing a credential is unreliable and expensive to debug — two separate transcription errors occurred (a dropped -, and an O/0 swap), surfacing only later as an opaque Token endpoint returned 400 and a failed deploy, each costing a credential roll plus a re-run. Always extract the exact value programmatically (e.g. a regex match against page text) and verify its length before use. Handle it inside the automated surface; never print a live credential into a chat transcript, which is stored. Related: a credential shown once and dismissed without copying must be rolled — build the copy step into the flow before clicking away.
+- **Trigger:** secret, api token, refresh token, transcription, screenshot, credential, token endpoint 400, roll token, do not print secrets
+
+## 2026-07-29 — Invoice_Generator — A separate-origin backend Worker needs CORS headers on every response
+- **Context:** A static frontend on one subdomain calling a sync-proxy Worker on a different origin
+- **Lesson:** When the frontend and its backend Worker are separate origins, every response — including the OPTIONS preflight and all error responses — must carry Access-Control-Allow-Origin / -Methods / -Headers, or the browser fetch fails before it ever sees the body. Handle OPTIONS explicitly and early, and spread the CORS headers into the error-response helper too, not just the success path. Note also: when an automated code review flags something like this on a PR, fix it before merge — this exact issue was flagged by a review bot and left unfixed, then had to be corrected later.
+- **Trigger:** cors, preflight, OPTIONS, access-control-allow-origin, cloudflare worker, separate origin, fetch failed, review bot finding
+
+## 2026-07-29 — Invoice_Generator — Add paths: filters when a repo deploys more than one artifact
+- **Context:** A repo holding both a static site and an example Worker; merging a Worker-only PR also fired the site's deploy workflow, which then failed
+- **Lesson:** In a repo with more than one deployable, give each deploy workflow a paths: filter so unrelated merges do not trigger it. Without one, every merge runs every deploy — producing confusing red runs that are unrelated to the change, and masking whether a genuine deploy regression exists.
+- **Trigger:** github actions, paths filter, deploy workflow, monorepo, multiple deployables, spurious failure, on push
+
+## 2026-07-29 — Claude-Sync workspace — Cloud-sync folders corrupt git object stores; always configure a remote
+- **Context:** A workspace repo living in a Google-Drive-synced directory had .git/HEAD pointing at a commit object missing from .git/objects; a nested repo in the same tree had the identical corruption independently
+- **Lesson:** Git repos inside Drive/Dropbox/OneDrive-synced folders corrupt: the sync client does not preserve git's atomic loose-object write semantics, so objects go missing and git status/log fail with fatal: bad object HEAD. Keep repos outside synced folders. If one must live there, configure a remote and push frequently — with no remote there is NO recovery path and history is simply lost. When recovering, move the broken .git aside as a backup rather than deleting it, gitignore that backup, and re-init; also check nested repos, which corrupt independently.
+- **Trigger:** bad object HEAD, git corruption, google drive, onedrive, dropbox, cloud sync, git fsck, invalid sha1 pointer, no remote, git init recovery
+
 ## 2026-07-28 — claude-code-studio — git diff two-dot vs three-dot gives different, misleading results when verifying a PR branch
 - **Context:** Writing/running a local verification script to check a PR branch's actual diff (e.g. before a GO/NO-GO merge call), where the base branch (main) had moved since the PR branch was cut
 - **Lesson:** git diff branchA branchB (two-dot) compares tip-to-tip, so it includes commits that landed on branchA AFTER branchB diverged from it — those show up as spurious additions/deletions that are not part of the PR at all. git diff branchA...branchB (three-dot) diffs from the merge-base instead, which is what GitHub's own PR 'Files changed' view uses. Reproduced directly in this repo: git diff main fix-learn-self-narration showed knowledge/LEARNINGS.md losing 5 lines (an entry a later, unrelated PR had added to main after this branch was cut) while git diff main...fix-learn-self-narration correctly showed nothing PR-specific. Always use three-dot (or diff against `git merge-base`) when verifying 'what does this PR actually change' against a moving base branch; two-dot answers a different question (what differs between these two tips right now) and will misattribute the other branch's independent history as part of the PR.
