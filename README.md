@@ -107,6 +107,7 @@ README) for the dependency to resolve. Each Cloudflare server OAuths on first to
 | `po` | Orchestrator: scopes a goal and delegates to specialists |
 | `feature-planning`, `code-review`, `security` | Sonnet-tier, judgment-heavy specialists |
 | `qa`, `backlog`, `devops`, `infra-admin`, `docs` | Haiku-tier, mechanical specialists |
+| `release-readiness` | Sonnet-tier: audits a PR's verification claims before merge |
 | `recall-learnings` | Reads relevant past lessons before work starts |
 | `capture-learnings` / `/learn` | Writes general lessons to `knowledge/LEARNINGS.md` |
 | `improve-agent` / `/improve-agent` | Bakes a behavioral fix into a specific agent |
@@ -133,6 +134,9 @@ purpose: that's exactly the kind of copy that silently drifts out of sync with
 `plugin.json`, which is the actual bug this changelog exists to stop repeating. Check
 installed versions with `claude plugin list`.)
 
+- **2026-07-29** — `studio-core` bumped to `0.4.0`: added `release-readiness`, a new
+  agent that audits whether a PR's "done"/verified claims are actually backed by
+  evidence before merge.
 - **2026-07-29** — `studio-core` bumped to `0.3.0`: the marketplace-refresh
   `SessionStart` hook now ships **enabled by default** (read-only; was opt-in).
 - **2026-07-28** — `studio-core` bumped to `0.2.2`: `po` now states explicitly

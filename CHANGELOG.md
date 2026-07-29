@@ -10,6 +10,19 @@ Entries are grouped by date, newest first. Each names the plugin and its new ver
 
 ## 2026-07-29
 
+### studio-core 0.4.0
+
+- **Added**: a new `release-readiness` agent (via `create-agent`). Fills a recurring,
+  cross-project gap: PRs shipping with unresolved test-plan checkboxes ("please
+  verify X in a browser", "confirm once deployed") that get merged anyway, with the
+  gap surfacing later as a production incident instead of a pre-merge blocker. It
+  audits whether "done"/"ready" claims in a PR are actually backed by evidence
+  (a real command run, CI output) versus a checked box with nothing behind it, and
+  separates legitimately-deferred items (need live creds/dashboard access) from ones
+  that were simply skipped. Distinct from `qa` (writes tests) and `devops` (diagnoses
+  live incidents) — this agent only audits existing claims. Registered with `po`.
+  MINOR bump: new agent.
+
 ### studio-core 0.3.0
 
 - **Changed**: the `SessionStart` hook (background `claude plugin marketplace update`,
