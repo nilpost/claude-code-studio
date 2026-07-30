@@ -24,6 +24,11 @@ the next `claude plugin marketplace update`.
 
 <!-- Captured entries below. Newest first. -->
 
+## 2026-07-30 — dev-workspace — npm install fails inside cloud-synced folders; clone to local disk to build
+- **Context:** A Node project living in a Google-Drive-synced directory; npm install ran for 20+ minutes then aborted, and no toolchain binary could be resolved afterwards
+- **Lesson:** npm install does not work inside Drive/OneDrive/Dropbox-synced folders: it fails partway with 'EBADF: bad file descriptor, write', rolls back, and leaves a node_modules/ that exists but has an empty .bin/ and no resolvable packages. The tell is 'tsc is not recognized' or "Cannot find module 'typescript/package.json'" while node_modules/typescript visibly exists on disk. Critically, 'npm install | tail' or any piped form reports success because the exit status comes from the last pipe stage, not from npm — check the log text, never the exit code. Do not retry in place; git clone the repo to a path off the synced drive and install there (seconds-to-minutes instead of failing outright). Same root cause as cloud sync corrupting git object stores: the sync client does not preserve the file semantics these tools require.
+- **Trigger:** npm install, EBADF, bad file descriptor, node_modules, .bin empty, tsc is not recognized, Cannot find module, google drive, onedrive, dropbox, cloud sync, exit code, pipe, build fails
+
 ## 2026-07-29 — sheets-sync-webapp — Plan multi-system integrations before touching any dashboard
 - **Context:** Wiring a static frontend + a sync-proxy Worker + Google Sheets auth, done by jumping straight into browser provisioning
 - **Lesson:** For any task spanning more than one external system (hosting + data source + auth + CI), write a short plan FIRST that answers: (1) what is the real shape of the source data, (2) which auth methods the org actually permits, (3) what tooling exists in this sandbox, (4) the full set of API scopes/permissions needed, (5) what triggers each deploy. Discovering these serially mid-build causes a rework cycle per discovery and burns very large amounts of tokens and wall-clock. The cost of a 15-minute planning pass is far below the cost of one rework.
