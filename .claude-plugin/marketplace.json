@@ -17,6 +17,15 @@
       }
     },
     {
+      "name": "studio-exec",
+      "source": "./plugins/studio-exec",
+      "description": "An executive layer above the delivery agents: portfolio strategy, revenue validation, and independent assurance for running several projects as a governed studio under a fixed token budget.",
+      "version": "0.1.0",
+      "author": {
+        "name": "nilpost"
+      }
+    },
+    {
       "name": "cloudflare-mcp",
       "source": "./plugins/cloudflare-mcp",
       "description": "Depends on Cloudflare's own official plugin, so it's pulled in automatically wherever this is enabled — local project, cloud session, or org-wide.",

@@ -27,6 +27,9 @@ and skills accumulate knowledge across projects instead of starting cold each ti
   behavioral fixes baked into the agents themselves.
 - **Self-extending** — when a recurring capability gap appears, `create-agent`
   scaffolds a new specialist and opens a draft PR.
+- **An optional executive layer (`studio-exec`)** for running *several* projects as a
+  governed portfolio — stage gates, a WIP limit, a token budget, and an independent
+  assurance agent that verifies claimed status against reality.
 - **Safe by default** — no secrets, the one hook enabled out of the box only ever
   reads (a background marketplace refresh, never a write), and all self-modifications
   go through PRs.
@@ -100,6 +103,27 @@ marketplace still needs to be added once in that environment (see the plugin's o
 README) for the dependency to resolve. Each Cloudflare server OAuths on first tool use
 — no tokens stored in this repo.
 
+### Executive layer (optional add-on)
+
+A third plugin, `studio-exec`, sits *above* the delivery agents. Use it when you are
+running several projects at once and the hard question is no longer "how do I build this"
+but "which one deserves the next hour, and is it actually working?"
+
+```bash
+claude plugin install studio-exec@claude-code-studio --scope user
+export STUDIO_OPS_DIR=/path/to/your-ops-repo    # where portfolio state lives
+```
+
+Four agents — `chief-of-staff`, `strategy`, `growth`, `consultant` — plus `/board-review`
+and `/gate`. Deliberately four and not eighteen: multi-agent systems cost roughly an order
+of magnitude more tokens than a single agent, so only roles needing genuine judgment became
+agents; CFO/COO/CTO functions became documents and commands. `consultant` sits outside the
+delegation chain (three lines of defense) — `po` may never invoke it.
+
+Business state lives in a **separate, usually private ops repo**, not here. See
+[`plugins/studio-exec/README.md`](plugins/studio-exec/README.md) for setup and
+[`docs/ORG-CHARTER.md`](docs/ORG-CHARTER.md) for the operating model.
+
 ## What's inside
 
 | Component | What it does |
@@ -112,18 +136,26 @@ README) for the dependency to resolve. Each Cloudflare server OAuths on first to
 | `capture-learnings` / `/learn` | Writes general lessons to `knowledge/LEARNINGS.md` |
 | `improve-agent` / `/improve-agent` | Bakes a behavioral fix into a specific agent |
 | `create-agent` / `/create-agent` | Scaffolds a new specialist agent → draft PR |
+| `chief-of-staff` *(exec)* | Routes across projects; enforces the WIP limit and token budget |
+| `strategy` *(exec)* | Portfolio allocation, stage gates, kill recommendations, ideation |
+| `growth` *(exec)* | Validation experiments, pricing models, distribution |
+| `consultant` *(exec)* | Independent assurance — audit, risk, operations, finance |
+| `board-review` / `/board-review` | The weekly ritual: triage, gates, budget, decisions |
+| `/gate` | Assess a project against a stage gate, on evidence |
 
 ## Repository structure
 
 ```
-.claude-plugin/marketplace.json      Marketplace catalog (lists both plugins)
+.claude-plugin/marketplace.json      Marketplace catalog (lists all three plugins)
 plugins/studio-core/                 The main plugin (agents, skills, commands, hooks)
+plugins/studio-exec/                 Optional plugin: executive/portfolio layer
 plugins/cloudflare-mcp/              Optional plugin: Cloudflare remote MCP servers
 knowledge/LEARNINGS.md               Shared, version-controlled cross-project memory
 templates/                           Copy/paste settings snippets for consumer repos
 scripts/                             install-local · update-studio · enable-in-repo ·
                                      mirror-local · sync-learnings
-docs/                                architecture · deploy-org-wide · updating
+docs/                                architecture · deploy-org-wide · updating ·
+                                     org-charter · prior-art
 ```
 
 ## Changelog
@@ -134,6 +166,10 @@ purpose: that's exactly the kind of copy that silently drifts out of sync with
 `plugin.json`, which is the actual bug this changelog exists to stop repeating. Check
 installed versions with `claude plugin list`.)
 
+- **2026-07-30** — new plugin `studio-exec` at `0.1.0`: an executive layer for running
+  several projects as a governed portfolio — `chief-of-staff`, `strategy`, `growth`, and
+  an independent `consultant`, plus `/board-review` and `/gate`. Four agents rather than a
+  full simulated C-suite, because token spend dominates outcome quality.
 - **2026-07-29** — `studio-core` bumped to `0.4.0`: added `cloud-provisioner`, a new
   agent that executes real cloud infrastructure changes via provider dashboards when
   no CLI/API/CI path exists — the one agent authorized to touch credentials/production.
@@ -164,9 +200,16 @@ See [CHANGELOG.md](CHANGELOG.md) for the full, dated history.
 
 ## Prior art & credits
 
-The learning loop follows the "learnings file → feedback → write-back" pattern from
-[`haddock-development/claude-reflect-system`](https://github.com/haddock-development/claude-reflect-system).
+**Full attribution is in [`docs/PRIOR-ART.md`](docs/PRIOR-ART.md)** — agent catalogues, the
+Anthropic/Cognition multi-agent debate that shaped `studio-exec`'s four-agent constraint,
+ChatDev/MetaGPT/CrewAI, the three-lines-of-defense governance model, stage-gate and
+venture-studio literature, and validation/pricing sources. Figures that reached us through
+secondary reporting are marked as such.
+
+In short: the learning loop follows the "learnings file → feedback → write-back" pattern
+from [`haddock-development/claude-reflect-system`](https://github.com/haddock-development/claude-reflect-system).
 For large ready-made agent/skill catalogs to draw from, see
+[`VoltAgent/awesome-claude-code-subagents`](https://github.com/VoltAgent/awesome-claude-code-subagents),
 [`wshobson/agents`](https://github.com/wshobson/agents),
 [`jeremylongshore/claude-code-plugins-plus-skills`](https://github.com/jeremylongshore/claude-code-plugins-plus-skills),
 and [`claude-market/marketplace`](https://github.com/claude-market/marketplace).
@@ -174,6 +217,9 @@ Mechanism reference: [plugin marketplaces](https://code.claude.com/docs/en/plugi
 [plugins](https://code.claude.com/docs/en/plugins) ·
 [skills](https://code.claude.com/docs/en/skills) ·
 [subagents](https://code.claude.com/docs/en/sub-agents).
+
+If you contribute an idea, framework, figure, or code you did not originate, add it to
+`docs/PRIOR-ART.md` in the same PR.
 
 ## License
 

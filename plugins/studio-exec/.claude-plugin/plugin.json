@@ -1,0 +1,17 @@
+{
+  "name": "studio-exec",
+  "displayName": "Claude Code Studio Exec",
+  "version": "0.1.0",
+  "description": "An executive layer above the delivery agents: portfolio strategy, revenue validation, and independent assurance for running several projects as a governed studio under a fixed token budget. Adds chief-of-staff, strategy, growth, and consultant, plus a weekly board-review ritual.",
+  "author": {
+    "name": "nilpost"
+  },
+  "keywords": [
+    "portfolio",
+    "governance",
+    "strategy",
+    "assurance",
+    "orchestration",
+    "multi-project"
+  ]
+}

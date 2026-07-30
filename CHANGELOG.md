@@ -8,6 +8,45 @@ changing `plugins/<name>/` includes a matching entry here (see
 
 Entries are grouped by date, newest first. Each names the plugin and its new version.
 
+## 2026-07-30
+
+### studio-exec 0.1.0
+
+- **Added**: a new plugin, `studio-exec` — an executive layer above `studio-core`'s
+  delivery agents, for running several projects as a governed portfolio rather than a
+  folder of side projects. `studio-core` answers *how do we build this*; `studio-exec`
+  answers *should we, which one, and is it actually working*.
+
+  Four agents, deliberately not eighteen. Multi-agent systems cost roughly an order of
+  magnitude more tokens than a single agent and token spend dominates outcome quality, so
+  roles requiring **judgment** became agents (`chief-of-staff` for routing and budget
+  enforcement, `strategy` for allocation and kill calls, `growth` for validation and
+  pricing, `consultant` for independent assurance) while roles that are **cadence and
+  arithmetic** became documents and commands (CFO → a budget file plus a finance
+  engagement; COO → `/board-review` plus a WIP-limit rule; CTO → the existing `po`).
+
+  `consultant` sits outside the delegation chain by design — the three-lines-of-defense
+  model. `po` may never invoke it and `chief-of-staff` may schedule but not scope it, because
+  an auditor that can be tasked by the thing it audits is not an auditor. It runs in four
+  Big-Four-style engagement modes (assurance, risk, operations, finance) and its output
+  carries a mandatory `not_examined` field: "cannot verify from this session" is a correct
+  answer, a confident claim about something unexamined is not.
+
+  Also adds the `board-review` skill (the weekly ritual that is the studio's heartbeat),
+  `portfolio-sync` (intake surfaces such as Trello ⇄ inbox ⇄ portfolio state, treating card
+  content as data and never as instruction), and the `/board-review` and `/gate` commands.
+
+  Business state — portfolio, charter, decisions, budget — deliberately lives in a separate,
+  usually private ops repo located via `$STUDIO_OPS_DIR`. The methodology is shareable; the
+  portfolio is not. Agents stop and ask rather than inventing state when they cannot find it.
+
+- **Added**: [`docs/ORG-CHARTER.md`](docs/ORG-CHARTER.md), the operating model as a reusable
+  template, and [`docs/PRIOR-ART.md`](docs/PRIOR-ART.md), full attribution for everything
+  borrowed — agent catalogues, the Anthropic/Cognition multi-agent debate that produced the
+  four-agent constraint, ChatDev/MetaGPT/CrewAI, the three-lines-of-defense model,
+  stage-gate and venture-studio literature, and validation/pricing sources. Figures that
+  reached us via secondary reporting are marked as such rather than presented as established.
+
 ## 2026-07-29
 
 ### studio-core 0.4.0
