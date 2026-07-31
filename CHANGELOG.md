@@ -8,6 +8,27 @@ changing `plugins/<name>/` includes a matching entry here (see
 
 Entries are grouped by date, newest first. Each names the plugin and its new version.
 
+## 2026-07-31
+
+### synology-mcp 0.1.0
+
+- **Added**: a new optional plugin, `synology-mcp`, connecting Claude Code to a
+  self-hosted [`atom2ueki/mcp-server-synology`](https://github.com/atom2ueki/mcp-server-synology)
+  instance (file operations, downloads, monitoring, container orchestration on a
+  Synology NAS) via an `http`-type MCP server.
+
+  Follows the pattern `cloudflare-mcp` established of not hand-copying a vendor's
+  config, but for a different reason: there's no official Claude Code plugin here to
+  depend on, and the server is inherently single-tenant (one NAS, real credentials).
+  So instead the endpoint is a `userConfig` value (`synology_mcp_url`, `sensitive:
+  true`) prompted at `claude plugin install` time and stored in secure local storage —
+  never written into this repo. This repo's own ground rule against committing private
+  hostnames (see `CONTRIBUTING.md`) is what ruled out the hand-copied-URL approach.
+
+  A second server requested alongside this one, `@anthropic-ai/mcp-server-google-sheets`,
+  was **not** added: that package doesn't resolve on the npm registry (404), so it
+  looks like a misremembered name. Revisit once the correct package/repo is confirmed.
+
 ## 2026-07-30
 
 ### studio-exec 0.1.0

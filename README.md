@@ -103,9 +103,25 @@ marketplace still needs to be added once in that environment (see the plugin's o
 README) for the dependency to resolve. Each Cloudflare server OAuths on first tool use
 — no tokens stored in this repo.
 
+### Synology NAS MCP (optional add-on)
+
+A third plugin, `synology-mcp`, connects Claude Code to a self-hosted
+[`atom2ueki/mcp-server-synology`](https://github.com/atom2ueki/mcp-server-synology)
+instance — file operations, downloads, monitoring, and container orchestration on your
+NAS. Unlike `cloudflare-mcp`, there's no vendor plugin to depend on and the server talks
+to one specific NAS, so the endpoint is never committed here: it's a `userConfig` value
+prompted (and stored securely) at enable time. See
+[`plugins/synology-mcp/README.md`](plugins/synology-mcp/README.md) for the full setup,
+including running your own server instance.
+
+```bash
+claude plugin install synology-mcp@claude-code-studio --scope user
+# prompts for your own instance's URL — nothing to paste into this repo
+```
+
 ### Executive layer (optional add-on)
 
-A third plugin, `studio-exec`, sits *above* the delivery agents. Use it when you are
+A fourth plugin, `studio-exec`, sits *above* the delivery agents. Use it when you are
 running several projects at once and the hard question is no longer "how do I build this"
 but "which one deserves the next hour, and is it actually working?"
 
@@ -150,6 +166,7 @@ Business state lives in a **separate, usually private ops repo**, not here. See
 plugins/studio-core/                 The main plugin (agents, skills, commands, hooks)
 plugins/studio-exec/                 Optional plugin: executive/portfolio layer
 plugins/cloudflare-mcp/              Optional plugin: Cloudflare remote MCP servers
+plugins/synology-mcp/                Optional plugin: self-hosted Synology NAS MCP server
 knowledge/LEARNINGS.md               Shared, version-controlled cross-project memory
 templates/                           Copy/paste settings snippets for consumer repos
 scripts/                             install-local · update-studio · enable-in-repo ·
@@ -166,6 +183,10 @@ purpose: that's exactly the kind of copy that silently drifts out of sync with
 `plugin.json`, which is the actual bug this changelog exists to stop repeating. Check
 installed versions with `claude plugin list`.)
 
+- **2026-07-31** — new plugin `synology-mcp` at `0.1.0`: an optional add-on that
+  connects Claude Code to a self-hosted Synology NAS MCP server
+  (`atom2ueki/mcp-server-synology`) over HTTP. The endpoint is a `userConfig` value
+  supplied per-consumer at enable time, never committed to this public repo.
 - **2026-07-30** — new plugin `studio-exec` at `0.1.0`: an executive layer for running
   several projects as a governed portfolio — `chief-of-staff`, `strategy`, `growth`, and
   an independent `consultant`, plus `/board-review` and `/gate`. Four agents rather than a
