@@ -103,14 +103,27 @@ marketplace still needs to be added once in that environment (see the plugin's o
 README) for the dependency to resolve. Each Cloudflare server OAuths on first tool use
 — no tokens stored in this repo.
 
+### Google Sheets MCP (optional add-on)
+
+A third plugin, `google-sheets-mcp`, adds Google's own official remote MCP server for
+Google Sheets (`sheetsmcp.googleapis.com`) — read/write cells, formulas, and sheet
+structure. Same shape as `cloudflare-mcp`: a single publicly-documented vendor endpoint,
+per-user OAuth on first tool use, nothing to install or store here. See
+[`plugins/google-sheets-mcp/README.md`](plugins/google-sheets-mcp/README.md) for how it
+was verified and what scopes it requests.
+
+```bash
+claude plugin install google-sheets-mcp@claude-code-studio --scope user
+```
+
 ### Synology NAS MCP (optional add-on)
 
-A third plugin, `synology-mcp`, connects Claude Code to a self-hosted
+A fourth plugin, `synology-mcp`, connects Claude Code to a self-hosted
 [`atom2ueki/mcp-server-synology`](https://github.com/atom2ueki/mcp-server-synology)
 instance — file operations, downloads, monitoring, and container orchestration on your
-NAS. Unlike `cloudflare-mcp`, there's no vendor plugin to depend on and the server talks
-to one specific NAS, so the endpoint is never committed here: it's a `userConfig` value
-prompted (and stored securely) at enable time. See
+NAS. Unlike the two plugins above, there's no vendor plugin to depend on and the server
+talks to one specific NAS, so the endpoint is never committed here: it's a `userConfig`
+value prompted (and stored securely) at enable time. See
 [`plugins/synology-mcp/README.md`](plugins/synology-mcp/README.md) for the full setup,
 including running your own server instance.
 
@@ -121,7 +134,7 @@ claude plugin install synology-mcp@claude-code-studio --scope user
 
 ### Executive layer (optional add-on)
 
-A fourth plugin, `studio-exec`, sits *above* the delivery agents. Use it when you are
+A fifth plugin, `studio-exec`, sits *above* the delivery agents. Use it when you are
 running several projects at once and the hard question is no longer "how do I build this"
 but "which one deserves the next hour, and is it actually working?"
 
@@ -166,6 +179,7 @@ Business state lives in a **separate, usually private ops repo**, not here. See
 plugins/studio-core/                 The main plugin (agents, skills, commands, hooks)
 plugins/studio-exec/                 Optional plugin: executive/portfolio layer
 plugins/cloudflare-mcp/              Optional plugin: Cloudflare remote MCP servers
+plugins/google-sheets-mcp/           Optional plugin: Google's official Sheets MCP server
 plugins/synology-mcp/                Optional plugin: self-hosted Synology NAS MCP server
 knowledge/LEARNINGS.md               Shared, version-controlled cross-project memory
 templates/                           Copy/paste settings snippets for consumer repos
@@ -183,6 +197,10 @@ purpose: that's exactly the kind of copy that silently drifts out of sync with
 `plugin.json`, which is the actual bug this changelog exists to stop repeating. Check
 installed versions with `claude plugin list`.)
 
+- **2026-07-31** — new plugin `google-sheets-mcp` at `0.1.0`: an optional add-on for
+  Google's own official remote MCP server for Sheets (`sheetsmcp.googleapis.com`),
+  replacing an originally-requested npm package that doesn't exist. Per-user OAuth,
+  same mechanism as `cloudflare-mcp` — verified live against the endpoint before adding.
 - **2026-07-31** — new plugin `synology-mcp` at `0.1.0`: an optional add-on that
   connects Claude Code to a self-hosted Synology NAS MCP server
   (`atom2ueki/mcp-server-synology`) over HTTP. The endpoint is a `userConfig` value

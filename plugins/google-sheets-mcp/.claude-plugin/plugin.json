@@ -1,0 +1,15 @@
+{
+  "name": "google-sheets-mcp",
+  "displayName": "Google Sheets MCP",
+  "version": "0.1.0",
+  "description": "Adds Google's own official remote MCP server for Google Sheets (sheetsmcp.googleapis.com). OAuths against your Google account on first tool use — no credentials stored in this repo.",
+  "author": {
+    "name": "nilpost"
+  },
+  "keywords": [
+    "mcp",
+    "google-sheets",
+    "google-workspace",
+    "spreadsheets"
+  ]
+}

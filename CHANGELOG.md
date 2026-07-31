@@ -10,6 +10,25 @@ Entries are grouped by date, newest first. Each names the plugin and its new ver
 
 ## 2026-07-31
 
+### google-sheets-mcp 0.1.0
+
+- **Added**: a new optional plugin, `google-sheets-mcp`, adding Google's own official
+  remote MCP server for Sheets — `https://sheetsmcp.googleapis.com/mcp/v1`, documented
+  at [Configure the Google Workspace MCP servers](https://developers.google.com/workspace/guides/configure-mcp-servers).
+
+  This replaces `@anthropic-ai/mcp-server-google-sheets` from the original request,
+  which doesn't exist as an npm package (404 on the registry). Before adding this
+  endpoint, it was verified live and directly (not taken on a search summary's word):
+  a raw MCP `initialize` POST returns a proper JSON-RPC handshake
+  (`serverInfo.name: "StatelessServer"`, `protocolVersion: "2025-06-18"`), and its
+  `.well-known/oauth-protected-resource/mcp/v1` metadata lists `accounts.google.com` as
+  the authorization server with `spreadsheets`/`drive` scopes — the standard MCP OAuth
+  Protected Resource discovery flow.
+
+  Declared directly in `.mcp.json` (no `userConfig`), the same shape as
+  `cloudflare-mcp`: a single publicly-documented vendor endpoint with per-user OAuth on
+  first tool use, nothing private to protect and nothing to install.
+
 ### synology-mcp 0.1.0
 
 - **Added**: a new optional plugin, `synology-mcp`, connecting Claude Code to a
@@ -26,8 +45,7 @@ Entries are grouped by date, newest first. Each names the plugin and its new ver
   hostnames (see `CONTRIBUTING.md`) is what ruled out the hand-copied-URL approach.
 
   A second server requested alongside this one, `@anthropic-ai/mcp-server-google-sheets`,
-  was **not** added: that package doesn't resolve on the npm registry (404), so it
-  looks like a misremembered name. Revisit once the correct package/repo is confirmed.
+  was not added under that name — see `google-sheets-mcp` above for what replaced it.
 
 ## 2026-07-30
 
