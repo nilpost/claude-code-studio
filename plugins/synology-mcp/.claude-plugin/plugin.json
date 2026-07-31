@@ -1,0 +1,24 @@
+{
+  "name": "synology-mcp",
+  "displayName": "Synology NAS MCP",
+  "version": "0.1.0",
+  "description": "Optional add-on: connects Claude Code to a self-hosted Synology NAS MCP server (atom2ueki/mcp-server-synology) over SSE, via mcp-proxy. The server URL is supplied per-consumer via userConfig at enable time and never committed to this repo.",
+  "author": {
+    "name": "nilpost"
+  },
+  "keywords": [
+    "mcp",
+    "synology",
+    "nas",
+    "self-hosted"
+  ],
+  "userConfig": {
+    "synology_mcp_url": {
+      "type": "string",
+      "title": "Synology MCP server SSE URL",
+      "description": "Full SSE endpoint of your own self-hosted Synology MCP server, e.g. https://your-host/sse — mcp-proxy's default transport and path (see plugins/synology-mcp/README.md for how to run one). Stored in secure local storage, never in this repo.",
+      "sensitive": true,
+      "required": true
+    }
+  }
+}

@@ -33,6 +33,24 @@
       "author": {
         "name": "nilpost"
       }
+    },
+    {
+      "name": "synology-mcp",
+      "source": "./plugins/synology-mcp",
+      "description": "Connects Claude Code to a self-hosted Synology NAS MCP server. The server URL is supplied per-consumer via userConfig at enable time, never committed to this repo.",
+      "version": "0.1.0",
+      "author": {
+        "name": "nilpost"
+      }
+    },
+    {
+      "name": "google-sheets-mcp",
+      "source": "./plugins/google-sheets-mcp",
+      "description": "Adds Google's own official remote MCP server for Google Sheets (sheetsmcp.googleapis.com). Per-user OAuth on first tool use, same mechanism as cloudflare-mcp.",
+      "version": "0.1.0",
+      "author": {
+        "name": "nilpost"
+      }
     }
   ]
 }

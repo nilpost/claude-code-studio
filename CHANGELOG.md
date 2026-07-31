@@ -8,6 +8,52 @@ changing `plugins/<name>/` includes a matching entry here (see
 
 Entries are grouped by date, newest first. Each names the plugin and its new version.
 
+## 2026-07-31
+
+### google-sheets-mcp 0.1.0
+
+- **Added**: a new optional plugin, `google-sheets-mcp`, adding Google's own official
+  remote MCP server for Sheets — `https://sheetsmcp.googleapis.com/mcp/v1`, documented
+  at [Configure the Google Workspace MCP servers](https://developers.google.com/workspace/guides/configure-mcp-servers).
+
+  This replaces `@anthropic-ai/mcp-server-google-sheets` from the original request,
+  which doesn't exist as an npm package (404 on the registry). Before adding this
+  endpoint, it was verified live and directly (not taken on a search summary's word):
+  a raw MCP `initialize` POST returns a proper JSON-RPC handshake
+  (`serverInfo.name: "StatelessServer"`, `protocolVersion: "2025-06-18"`), and its
+  `.well-known/oauth-protected-resource/mcp/v1` metadata lists `accounts.google.com` as
+  the authorization server with `spreadsheets`/`drive` scopes — the standard MCP OAuth
+  Protected Resource discovery flow.
+
+  Declared directly in `.mcp.json` (no `userConfig`), the same shape as
+  `cloudflare-mcp`: a single publicly-documented vendor endpoint with per-user OAuth on
+  first tool use, nothing private to protect and nothing to install.
+
+### synology-mcp 0.1.0
+
+- **Added**: a new optional plugin, `synology-mcp`, connecting Claude Code to a
+  self-hosted [`atom2ueki/mcp-server-synology`](https://github.com/atom2ueki/mcp-server-synology)
+  instance (file operations, downloads, monitoring, container orchestration on a
+  Synology NAS) via an `sse`-type MCP server.
+
+  Follows the pattern `cloudflare-mcp` established of not hand-copying a vendor's
+  config, but for a different reason: there's no official Claude Code plugin here to
+  depend on, and the server is inherently single-tenant (one NAS, real credentials).
+  So instead the endpoint is a `userConfig` value (`synology_mcp_url`, `sensitive:
+  true`) prompted at `claude plugin install` time and stored in secure local storage —
+  never written into this repo. This repo's own ground rule against committing private
+  hostnames (see `CONTRIBUTING.md`) is what ruled out the hand-copied-URL approach.
+
+  A second server requested alongside this one, `@anthropic-ai/mcp-server-google-sheets`,
+  was not added under that name — see `google-sheets-mcp` above for what replaced it.
+
+  **Fix (same day, review feedback):** declared as `"type": "http"` at first, which is
+  Streamable HTTP — a different protocol from SSE in Claude Code's MCP client. This
+  plugin's own README recommends fronting the stdio server with `mcp-proxy`, which
+  defaults to SSE transport at `/sse`, so `"type": "http"` would have broken the
+  handshake for anyone following that instruction. Changed to `"type": "sse"` and the
+  `userConfig` field now asks for the full SSE endpoint URL explicitly.
+
 ## 2026-07-30
 
 ### studio-exec 0.1.0
