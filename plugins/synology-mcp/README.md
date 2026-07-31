@@ -10,7 +10,8 @@ NAS.
 Unlike `cloudflare-mcp`, there's no official Claude Code plugin/marketplace for this
 project to depend on, and the server itself talks to one specific NAS with real
 credentials — there's nothing generic to redistribute. So this plugin declares the
-`.mcp.json` shape (an `http`-type server) but leaves the actual endpoint as a
+`.mcp.json` shape (an `sse`-type server, matching `mcp-proxy`'s default transport — see
+below) but leaves the actual endpoint as a
 [`userConfig`](https://code.claude.com/docs/en/plugins-reference#user-configuration)
 value, `synology_mcp_url`, prompted at enable time and marked `sensitive`. That value is
 stored in your OS keychain (or `~/.claude/.credentials.json` where no keychain is
@@ -21,30 +22,34 @@ NAS/reverse-proxy hostname directly, since this is a public marketplace.
 ## Prerequisite — run your own instance
 
 This plugin is a client, not a server. You need your own running instance of
-`mcp-server-synology` reachable over HTTP:
+`mcp-server-synology` reachable remotely:
 
 1. Deploy [`atom2ueki/mcp-server-synology`](https://github.com/atom2ueki/mcp-server-synology)
    (Docker Compose is the fastest path) with your NAS's `SYNOLOGY_URL` /
    `SYNOLOGY_USERNAME` / `SYNOLOGY_PASSWORD` — see that repo's README.
-2. Its default transport is stdio; for remote/HTTP access use their documented
-   `mcp-proxy` HTTP/SSE deployment option, fronted by your own TLS-terminating reverse
-   proxy.
-3. Keep the resulting HTTPS URL out of any file in this repo — supply it interactively
-   (below) instead.
+2. Its default transport is stdio; expose it remotely with
+   [`mcp-proxy`](https://github.com/sparfenyuk/mcp-proxy) (`mcp-proxy --port=8080 -- <stdio
+   command>`), fronted by your own TLS-terminating reverse proxy. **`mcp-proxy` defaults
+   to SSE transport**, served at `/sse` — that's why this plugin declares its server as
+   `"type": "sse"` rather than `"http"` (Streamable HTTP); the two are distinct
+   protocols in Claude Code's MCP client and using the wrong one breaks the handshake.
+3. The URL you supply below must be the **full SSE endpoint**, e.g.
+   `https://your-host.example.com/sse` — not just the bare host. Keep it out of any file
+   in this repo; supply it interactively (below) instead.
 
 ## Enable it
 
 ```bash
 claude plugin marketplace add nilpost/claude-code-studio   # if not already added
 claude plugin install synology-mcp@claude-code-studio --scope user
-# prompts for "Synology MCP server URL" — paste your own instance's URL
+# prompts for "Synology MCP server SSE URL" — paste your own instance's /sse endpoint
 ```
 
 Non-interactive (cloud sessions, CI):
 
 ```bash
 claude plugin install synology-mcp@claude-code-studio --scope user \
-  --config synology_mcp_url=https://your-own-synology-mcp-instance.example.com
+  --config synology_mcp_url=https://your-own-synology-mcp-instance.example.com/sse
 ```
 
 ## Secure your endpoint

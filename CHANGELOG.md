@@ -34,7 +34,7 @@ Entries are grouped by date, newest first. Each names the plugin and its new ver
 - **Added**: a new optional plugin, `synology-mcp`, connecting Claude Code to a
   self-hosted [`atom2ueki/mcp-server-synology`](https://github.com/atom2ueki/mcp-server-synology)
   instance (file operations, downloads, monitoring, container orchestration on a
-  Synology NAS) via an `http`-type MCP server.
+  Synology NAS) via an `sse`-type MCP server.
 
   Follows the pattern `cloudflare-mcp` established of not hand-copying a vendor's
   config, but for a different reason: there's no official Claude Code plugin here to
@@ -46,6 +46,13 @@ Entries are grouped by date, newest first. Each names the plugin and its new ver
 
   A second server requested alongside this one, `@anthropic-ai/mcp-server-google-sheets`,
   was not added under that name — see `google-sheets-mcp` above for what replaced it.
+
+  **Fix (same day, review feedback):** declared as `"type": "http"` at first, which is
+  Streamable HTTP — a different protocol from SSE in Claude Code's MCP client. This
+  plugin's own README recommends fronting the stdio server with `mcp-proxy`, which
+  defaults to SSE transport at `/sse`, so `"type": "http"` would have broken the
+  handshake for anyone following that instruction. Changed to `"type": "sse"` and the
+  `userConfig` field now asks for the full SSE endpoint URL explicitly.
 
 ## 2026-07-30
 
