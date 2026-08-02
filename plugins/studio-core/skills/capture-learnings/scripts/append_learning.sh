@@ -78,12 +78,31 @@ marker="<!-- Captured entries below. Newest first. -->"
 
 if grep -qF "$marker" "$file"; then
   # Insert entry immediately after the marker line.
+  #
+  # The entry is multi-line, so it is passed to awk via a temp file rather than
+  # `-v entry="$entry"`. GNU awk tolerates a literal newline in a -v assignment,
+  # but the BWK awk shipped as /usr/bin/awk on macOS rejects it with
+  # "awk: newline in string ... at source line 1" and writes nothing.
   tmp="$(mktemp)"
-  awk -v marker="$marker" -v entry="$entry" '
+  entry_file="$(mktemp)"
+  trap 'rm -f "$tmp" "$entry_file"' EXIT
+  printf '%s\n' "$entry" > "$entry_file"
+
+  awk -v marker="$marker" -v entry_file="$entry_file" '
     { print }
-    index($0, marker) { print entry }
+    !inserted && index($0, marker) {
+      while ((getline line < entry_file) > 0) print line
+      close(entry_file)
+      inserted = 1
+    }
   ' "$file" > "$tmp"
-  mv "$tmp" "$file"
+
+  # Refuse to clobber the knowledge base with a truncated or empty rewrite.
+  if [ ! -s "$tmp" ]; then
+    echo "append_learning.sh: refusing to write empty result to $file" >&2
+    exit 1
+  fi
+  cat "$tmp" > "$file"
 else
   printf '%s\n' "$entry" >> "$file"
 fi
