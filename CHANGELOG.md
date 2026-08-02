@@ -8,6 +8,32 @@ changing `plugins/<name>/` includes a matching entry here (see
 
 Entries are grouped by date, newest first. Each names the plugin and its new version.
 
+## 2026-08-02
+
+### studio-core 0.4.1
+
+- **Fixed**: `append_learning.sh` captured nothing on macOS, so `/studio-core:learn` was
+  a no-op there. The script built a multi-line entry and passed it as
+  `awk -v entry="$entry"`. GNU awk tolerates a literal newline in a `-v` assignment; the
+  BWK awk shipped as `/usr/bin/awk` on macOS rejects it with
+  `awk: newline in string ... at source line 1`. Under `set -e` the script then aborted
+  before writing — it failed loudly rather than corrupting anything, but every capture
+  on a Mac was lost.
+
+  The entry now reaches awk through a temp file and a `getline` loop, with `-v` reserved
+  for short single-line scalars. Also added an `!inserted` guard so a repeated marker
+  cannot duplicate the entry, an empty-output check so a failed rewrite can never
+  truncate `LEARNINGS.md`, and a `trap` that cleans up both temp files. Verified by
+  running on `awk version 20200816`: 34 → 35 entries, inserted under the marker, tail
+  byte-identical. Behaviour on gawk is unchanged.
+
+  Known issue left unfixed and recorded in `knowledge/LEARNINGS.md` instead: the
+  `$CLAUDE_PLUGIN_ROOT/../../knowledge/LEARNINGS.md` fallback in `recall-learnings`
+  assumes the repo layout, but the installed layout has no `knowledge/` dir above the
+  plugin, and `knowledge/` is not packaged. Auto-falling back to the marketplace clone
+  would write lessons into a frequently-stale checkout, so the fix is a maintainer
+  decision — package `knowledge/`, or add a freshness-checked fallback.
+
 ## 2026-07-31
 
 ### google-sheets-mcp 0.1.0
