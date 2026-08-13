@@ -197,6 +197,10 @@ purpose: that's exactly the kind of copy that silently drifts out of sync with
 `plugin.json`, which is the actual bug this changelog exists to stop repeating. Check
 installed versions with `claude plugin list`.)
 
+- **2026-08-13** — `studio-core` `0.4.2`: three verification-discipline lessons baked
+  into `code-review`, `devops`, and `po`. Do not infer a process violation from `git log`
+  alone (a rebase merge looks exactly like a direct push); a green CI dashboard is not
+  evidence a change was verified; state severity only to the level you have established.
 - **2026-07-31** — new plugin `google-sheets-mcp` at `0.1.0`: an optional add-on for
   Google's own official remote MCP server for Sheets (`sheetsmcp.googleapis.com`),
   replacing an originally-requested npm package that doesn't exist. Per-user OAuth,

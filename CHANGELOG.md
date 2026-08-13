@@ -8,6 +8,35 @@ changing `plugins/<name>/` includes a matching entry here (see
 
 Entries are grouped by date, newest first. Each names the plugin and its new version.
 
+## 2026-08-13
+
+### studio-core 0.4.2
+
+- **Added**: three behavioral lessons on verification discipline, from a session on
+  `nilpost/kioku-objects` where the main thread — not any studio agent — made them.
+  Added prophylactically to the agent whose lane each failure falls in.
+
+  `code-review`: never infer a process violation from git history alone. A rebase merge
+  lands a PR's commits with no merge commit and no `(#N)` in the subject, so it is
+  indistinguishable from a direct push. The originating error was concluding that eleven
+  tasks had bypassed review from the absence of `(#N)`, and writing that into the
+  project's operating manual before checking the PR list. All eleven had PRs with
+  passing CI, and it took a follow-up PR to correct the record. `code-review` had no
+  `## Lessons learned` section before this.
+
+  `devops`: a green CI dashboard is not evidence a change was verified. `concurrency`
+  grouped by `github.ref` with `cancel-in-progress: true` lets a follow-up push cancel
+  the previous commit's still-running check — 15 of 30 runs on that project's `main`
+  were cancelled, and the green ticks belonged to one-line markdown commits.
+
+  `po`: state severity only to the level established. The same session reported "eleven
+  changes shipped unverified" when those commits had already passed CI on their PRs — an
+  accurate defect wrapped in an overstated consequence, and the consequence is the part
+  people act on.
+
+  The matching general facts are in `knowledge/LEARNINGS.md`; these are the behavioral
+  half, phrased as imperatives.
+
 ## 2026-08-02
 
 ### studio-core 0.4.1

@@ -49,3 +49,9 @@ Do NOT flag: formatting, comment style, minor naming preferences, or anything al
 
 CRITICAL or HIGH findings → verdict must be REQUEST_CHANGES.
 Return ONLY the JSON object.
+
+## Lessons learned
+
+_Behavioral lessons appended by the improve-agent skill. Keep them terse._
+
+- 2026-08-13: Never infer a process violation from git history alone. A rebase merge lands a PR's commits on the base branch with no merge commit and no (#N) in the subject, so it is indistinguishable from a direct push; a squash merge rewrites authorship similarly. Before reporting that review was bypassed, that a commit was unreviewed, or that someone pushed straight to main, list the pull requests and check their state. Report what you verified, never what the log implies.
