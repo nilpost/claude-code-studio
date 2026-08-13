@@ -24,6 +24,26 @@ the next `claude plugin marketplace update`.
 
 <!-- Captured entries below. Newest first. -->
 
+## 2026-08-13 — kioku-objects — Read branch protection state via /branches when /protection 403s
+- **Context:** Checking whether branch protection is enabled with a scoped GitHub App token
+- **Lesson:** GET /repos/{o}/{r}/branches/{b}/protection needs the administration permission and 403s with 'Resource not accessible by integration' for most app tokens. GET /repos/{o}/{r}/branches/{b} returns a 'protected' boolean under plain metadata scope — use it rather than reporting protection status as unknown. Note a 403 on the protection endpoint means unknown, never absent.
+- **Trigger:** branch protection, Resource not accessible by integration, 403, protected, administration permission, rulesets
+
+## 2026-08-13 — kioku-objects — Session-scoped cron jobs vanish without warning
+- **Context:** Scheduling recurring checks or reviews with CronCreate
+- **Lesson:** CronCreate jobs are in-memory and session-only: they disappear on any session restart with no error and no notice, so a user who was told 'it is scheduled' silently gets nothing. Verify with CronList before relying on one, tell the user it is best-effort, and use a committed GitHub Actions schedule for anything that must actually run.
+- **Trigger:** CronCreate, CronList, scheduled job, recurring, loop, ScheduleWakeup, session-only
+
+## 2026-08-13 — kioku-objects — concurrency cancel-in-progress silently stops CI gating main
+- **Context:** GitHub Actions workflow that runs on both push:main and pull_request
+- **Lesson:** Scope cancel-in-progress to pull requests: cancel-in-progress: ${{ github.event_name == 'pull_request' }}. Grouped by github.ref alone it also cancels main runs, so a bookkeeping commit pushed seconds after a work commit kills that work commit's run. The trivial commits show green while the substantive ones are never verified — worse than no CI, because the dashboard looks healthy.
+- **Trigger:** concurrency, cancel-in-progress, github.ref, ci.yml, cancelled workflow run, branch protection required checks
+
+## 2026-08-13 — kioku-objects — Rebase merges make PR-merged commits look like direct pushes
+- **Context:** Reviewing merge history to judge whether code bypassed review
+- **Lesson:** Never conclude that review was bypassed from git log alone. A rebase merge replays a PR's commits onto main with no merge commit and no (#N) in the subject, so it is indistinguishable from a direct push. List the PRs and check their state first — and never write such a claim into a shared operating manual before verifying it.
+- **Trigger:** git log, rebase merge, bypassed review, direct push, (#N), merge commit, list_pull_requests
+
 ## 2026-08-11 — postius-hub — Cloudflare login for the postiusgroup.com fleet is nilpostius@me.com
 - **Context:** Walking the user through creating a Cloudflare API token for postius-hub's new deploy workflow, the zone-scoping step showed "Specific zone" greyed out with no zones on the logged-in account. Corroborating evidence (`workers_list` / `kv_namespaces_list` via the Cloudflare Developer Platform MCP connector) showed the fleet's real infrastructure — the `postius-hub` Worker, its exact committed KV namespace ID, and every other project's Worker — already existed on a *different* account than the one showing in the user's browser. The guess offered for the missing login was `nil@amsform.com`, because that is the `accessEmail` field recorded in `projects.json` — an unrelated fact (the Cloudflare Access gate's contact email, not an account login). The user corrected this: the actual Cloudflare login for the whole fleet is `nilpostius@me.com`, and noted this should already be known since it is the same across every project touching this infrastructure.
 - **Lesson:** For any Postius-fleet project (postius-hub, finpal, invoice-generator, focus-timer, file-organization-toolkit, fy26-reports, landing-page, equis-nexus, code-weave-quest, invoice-sync-proxy — anything on postiusgroup.com / Cloudflare) the Cloudflare account login is **nilpostius@me.com**. Do not infer an account-owner login from an adjacent recorded email field (an Access-gate contact, a git commit author, etc.) — those are frequently a different identity than the actual provider login, and guessing wrong wastes a token-creation attempt. When a Cloudflare zone/token picker shows no zones, that is real signal of a wrong-account browser session — verifiable independently via the Cloudflare Developer Platform MCP tools (`workers_list` / `kv_namespaces_list`: if the fleet's known Worker names and committed KV namespace IDs show up, that connector is on the right account, so cross-check the browser login against it) — before assuming the zone itself is unconfigured.
