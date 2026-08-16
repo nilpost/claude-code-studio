@@ -24,6 +24,36 @@ the next `claude plugin marketplace update`.
 
 <!-- Captured entries below. Newest first. -->
 
+## 2026-08-16 — agent-tooling — git branch -a shows a local cache, not what exists on the remote
+- **Context:** Recommending deletion of an apparently stale remote branch that had already been deleted on the server
+- **Lesson:** git branch -a lists remote-TRACKING refs from the last fetch, not live remote state, so a branch deleted on the server keeps appearing until pruned, and git push origin --delete then fails with 'remote ref does not exist'. Query the remote directly with git ls-remote --heads origin before asserting that a branch exists. Clear stale refs with git remote prune origin or git fetch --prune, and make it automatic with git config --global fetch.prune true.
+- **Trigger:** git branch -a, stale branch, remote ref does not exist, push --delete, git remote prune, fetch --prune, branch already deleted, merged branch
+
+## 2026-08-16 — agent-tooling — Surface agent memory as paths, not contents, and tune it toward silence
+- **Context:** Making an agent consult a markdown knowledge base automatically rather than only when told
+- **Lesson:** Search the knowledge base first is an instruction, and instructions get followed inconsistently; making retrieval mechanical is better. But injecting note CONTENTS on every prompt spends context whether or not they are relevant. Inject matching PATHS and titles only and let the agent choose what to open. Bias hard toward silence: a false positive costs attention on every prompt, while a miss only leaves you where you already were. Three tunings mattered, in order of impact: (1) drop query terms with high document frequency — a knowledge base about your own work is self-referential, so its own topic words discriminate nothing; (2) weight filename matches far above prose matches; (3) when a term exceeds the frequency cap, keep only the notes with it in the filename instead of discarding the term. State plainly in the agent instructions that the mechanism is lossy, or the agent will read its silence as evidence of absence.
+- **Trigger:** UserPromptSubmit, auto-surface notes, inject paths not contents, progressive disclosure, context budget, document frequency, retrieval precision, over-injection
+
+## 2026-08-16 — agent-tooling — Ask an agent to break a claim, never to confirm it
+- **Context:** Verifying that two different coding agents had equivalent instructions
+- **Lesson:** Asking an agent to 'confirm these match' reliably returns 'confirmed' and teaches you nothing — agreeableness is the default failure mode. Frame the request to falsify: state the intent, then say do not confirm, try to break it. Ask specifically for (a) differences in substance rather than wording, (b) what is mechanically ENFORCED versus merely advised, and whether that gap would change behaviour, (c) what would you not reliably follow and why — the highest yield question, (d) ambiguities where two readers could each act reasonably and differently. Require quoted lines, since unquoted findings are frequently invented. Add do not change any files so the auditor does not contaminate what it audits. Then triage the output yourself: some findings are real defects, some are deliberate design choices, some are irreducible vagueness that should not be fixed.
+- **Trigger:** parity check, audit, verify, confirm, adversarial, falsify, second opinion, cross-agent, agreeableness, rubber stamp, instructions drift
+
+## 2026-08-16 — agent-tooling — An idempotent installer must recognise every form it has ever written
+- **Context:** An installer that de-duplicates its own hook entries inside a JSON settings file
+- **Lesson:** De-duplication that matches only the installer CURRENT output format leaves earlier or hand-installed variants in place, so the effect fires twice. Match every historical form, not just today one. Equally important: assert on the TOTAL number of entries, not on the number matching your own pattern — a check that counts only your own handiwork cannot see a duplicate left by an earlier version or by a human. Verify by running twice and comparing full state.
+- **Trigger:** idempotent, install script, de-duplicate, hook registered twice, fires twice, duplicate hook entry, jq merge, settings.json hooks array, legacy format
+
+## 2026-08-16 — agent-tooling — A marked-block installer must refuse damaged files, never repair them by appending
+- **Context:** An idempotent installer that rewrites a BEGIN/END marked block inside user config files
+- **Lesson:** When a target file has a BEGIN marker but no matching END, a skip-until-END rewrite swallows everything after BEGIN and never re-emits END: silent data loss reported as success. Falling back to 'append a fresh block' does NOT fix it — the result has two BEGIN markers and one END, which the same parser then reads as one large replaceable region and destroys on the NEXT run. Classify the target three ways: exactly one well-ordered BEGIN/END pair (replace), no markers at all (append), anything else (REFUSE and warn). Refusing is correct because repairing means guessing which content the user intended to keep. Verify by running the installer repeatedly against a damaged fixture, not once.
+- **Trigger:** idempotent installer, BEGIN END marker, marked block, awk replace, config rewrite, data loss, install.sh, dotfiles, second run, CLAUDE.md, AGENTS.md
+
+## 2026-08-16 — agent-tooling — Hook scripts run in a bare shell, not your interactive one
+- **Context:** Writing Claude Code SessionStart and UserPromptSubmit hook scripts that silently did nothing
+- **Lesson:** A hook executes in a plain shell with none of the conveniences of an interactive session or of the agent CLI own Bash tool. Two traps hit in one session: (1) ripgrep may be a shell FUNCTION injected into the agent Bash tool rather than a real binary — command -v rg printing a bare name instead of an absolute path is the tell — and a guard of the form 'command -v x >/dev/null || exit 0' then turns the entire hook into a silent no-op; (2) macOS system bash is 3.2, so mapfile, readarray and associative arrays do not exist. Prefer grep over rg in hooks, write for bash 3.2, and test by piping the real JSON payload into /bin/bash path/to/hook.sh rather than running it from the agent own shell, which is dressed up and will pass when the real hook fails.
+- **Trigger:** hook does nothing, SessionStart, UserPromptSubmit, rg, ripgrep, command -v, mapfile, bash 3.2, macos bash, silent no-op, bare shell, hook environment
+
 ## 2026-08-13 — kioku-objects — Read branch protection state via /branches when /protection 403s
 - **Context:** Checking whether branch protection is enabled with a scoped GitHub App token
 - **Lesson:** GET /repos/{o}/{r}/branches/{b}/protection needs the administration permission and 403s with 'Resource not accessible by integration' for most app tokens. GET /repos/{o}/{r}/branches/{b} returns a 'protected' boolean under plain metadata scope — use it rather than reporting protection status as unknown. Note a 403 on the protection endpoint means unknown, never absent.
