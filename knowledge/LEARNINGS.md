@@ -24,6 +24,26 @@ the next `claude plugin marketplace update`.
 
 <!-- Captured entries below. Newest first. -->
 
+## 2026-08-16 — nebra-rockpi-ttn-gateway — WebFetch-style summarized fetches can hallucinate exact technical values
+- **Context:** Researching an SX1301 concentrator driver bug via web-fetched community docs and GitHub source
+- **Lesson:** Two summarized fetches of the same technical document (register addresses, chip-select numbers) produced contradictory specifics. General prose summaries were fine; precision-critical details were not trustworthy. When a fact needs to be exact -- a register address, a schema field name, a version string -- fetch the raw source directly (curl + Read, or raw.githubusercontent.com) rather than trusting a summarized fetch. Reserve summarized fetches for orientation, not decisions that hinge on an exact value.
+- **Trigger:** WebFetch,hallucination,raw source,curl,verification,research
+
+## 2026-08-16 — nebra-rockpi-ttn-gateway — A command block ending in a privileged reboot can execute on the wrong machine
+- **Context:** Handing the user a multi-line command block to paste into an active SSH session during hardware bring-up
+- **Lesson:** If an SSH session has silently dropped back to a local shell, a pasted command block still executes -- just locally instead of remotely. A block ending in sudo reboot rebooted the user's own laptop twice, looking exactly like a crash. Before handing over any block ending in something disruptive (reboot, shutdown, rm), have the target session's prompt/hostname confirmed first, and keep disruptive commands as their own separate step rather than bundled at the end of a longer block.
+- **Trigger:** SSH,sudo reboot,remote session,terminal,wrong machine
+
+## 2026-08-16 — nebra-rockpi-ttn-gateway — A remote install can outlive its own client-side timeout and race a retry
+- **Context:** rustup install over SSH to a resource-constrained SBC during hardware bring-up
+- **Lesson:** A Bash tool timeout on an SSH-invoked long command does not guarantee the remote process stopped -- it can keep running orphaned on the server. Retrying immediately launches a second instance that races the first and corrupts shared state (a toolchain install directory, in this case). Before retrying anything that timed out, check the remote process list first; for anything expected to run long, launch it detached with nohup and a captured PID from the start rather than discovering this after the fact.
+- **Trigger:** SSH,timeout,nohup,background process,rustup,cargo build,remote build
+
+## 2026-08-16 — nebra-rockpi-ttn-gateway — pkill -f can match and kill its own invoking command line
+- **Context:** Cleaning up a stray background gpioset process over SSH during hardware bring-up debugging
+- **Lesson:** Never pass a pkill -f pattern that could plausibly appear in the invoking command's own argument text (a consumer label, a wrapping bash -c payload). It will self-match and kill the shell that ran it -- twice in one session, once killing the SSH session itself. Get exact PIDs with pgrep -f first, then kill by PID number.
+- **Trigger:** pkill,pgrep,SSH,bash -c,process cleanup,remote debugging
+
 ## 2026-08-16 — agent-tooling — git branch -a shows a local cache, not what exists on the remote
 - **Context:** Recommending deletion of an apparently stale remote branch that had already been deleted on the server
 - **Lesson:** git branch -a lists remote-TRACKING refs from the last fetch, not live remote state, so a branch deleted on the server keeps appearing until pruned, and git push origin --delete then fails with 'remote ref does not exist'. Query the remote directly with git ls-remote --heads origin before asserting that a branch exists. Clear stale refs with git remote prune origin or git fetch --prune, and make it automatic with git config --global fetch.prune true.
